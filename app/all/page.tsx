@@ -2,7 +2,7 @@
 import { geographyData } from "@/lib/geography";
 import { translateCountryName } from "@/lib/ja_name";
 import { isJapaneseMatch } from "@/lib/util";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 
 export default function Page() {
@@ -54,9 +54,11 @@ export default function Page() {
             return;
         }
         if (checkAnswer(userInput, selectedCountryName)) {
-            setAnsweredCountriesNameSet((prev) => new Set([...prev, selectedCountryName]));
+            const newSet = new Set([...answeredCountriesNameSet, selectedCountryName]);
+            setAnsweredCountriesNameSet(newSet);
             setUserInput("");
             alert("正解です！");
+            save(newSet);
             selectRandomUnansweredCountry();
         }
         else {
@@ -82,6 +84,44 @@ export default function Page() {
         const randomCountryName = unansweredCountries[randomIndex].properties.name;
         setSelectedCountryName(randomCountryName);
     };
+
+    const save = (countriesNameSet:Set<string>) =>{
+        const answeredCountriesNameSetString = JSON.stringify(Array.from(countriesNameSet));
+        localStorage.setItem("answeredCountriesNameSet", answeredCountriesNameSetString);
+    }
+    const load = () => {
+        const answeredCountriesNameSetString = localStorage.getItem("answeredCountriesNameSet");
+        if (answeredCountriesNameSetString) {
+            const answeredCountriesNameSetArray = JSON.parse(answeredCountriesNameSetString);
+            const answeredCountriesNameSet = new Set(answeredCountriesNameSetArray);
+            setAnsweredCountriesNameSet(answeredCountriesNameSet as Set<string>);
+        }
+    }
+    const clearSaveData = () => {
+        localStorage.removeItem("answeredCountriesNameSet");
+        setAnsweredCountriesNameSet(new Set());
+    }
+
+    useEffect(()=>{
+        if(localStorage.getItem("answeredCountriesNameSet")) {
+            if(confirm("前回の途中から再開しますか？")) {
+                load();
+                return;
+            }
+            clearSaveData();
+        }
+    },[])
+
+    const isFinished = useMemo(() => {
+        return answeredCountriesNameSet.size === 3;
+    }, [answeredCountriesNameSet]);
+
+    useEffect(() => {
+        if (isFinished) {
+            alert("すべての国を答えました!Congratulations!");
+            clearSaveData();
+        }
+    }, [isFinished]);
 
     return (
         <div className={`overflow-hidden w-screen h-[calc(100vh-${DrawerHeight}px)]`}>
