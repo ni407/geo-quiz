@@ -10,13 +10,17 @@ import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 're
 export default function Page() {
     const [selectedCountryName, setSelectedCountryName] = useState<string | null>(null);
     const [userInput, setUserInput] = useState<string>('');
-    const coordinates = selectedCountryName ? getCoordinates(selectedCountryName) : null;
+    const coordinates = useMemo(
+        () => (selectedCountryName ? getCoordinates(selectedCountryName) : null),
+        [selectedCountryName],
+    );
     const [zoomRate, setZoomRate] = useState<number>(1);
 
     const handleCountryClick = (geo: any) => {
         if (answeredCountriesNameSet.has(geo.properties.name)) {
             const translatedAnswer = getJpNames(geo.properties.name)[0];
             alert(translatedAnswer);
+            ref.current?.focus();
             return;
         }
         setSelectedCountryName(geo.properties.name);
@@ -108,7 +112,7 @@ export default function Page() {
         const randomIndex = Math.floor(Math.random() * targetCountries.length);
         const randomCountryName = targetCountries[randomIndex].properties.name;
         setSelectedCountryName(randomCountryName);
-        setZoomRate(1.5);
+        setZoomRate(2);
     };
 
     const save = (countriesNameSet: Set<string>) => {
@@ -163,7 +167,7 @@ export default function Page() {
     return (
         <div className={`overflow-hidden w-screen h-[calc(100vh-${DrawerHeight}px)]`}>
             <ComposableMap>
-                <ZoomableGroup center={coordinates ?? [0, 0]} zoom={zoomRate}>
+                <ZoomableGroup center={coordinates ?? undefined} zoom={zoomRate}>
                     <Geographies geography={geographyData} className="relative">
                         {({ geographies }) =>
                             geographies.map((geo) => (
