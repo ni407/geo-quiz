@@ -1,4 +1,4 @@
-export const  isJapaneseMatch = (inputStr:string, answer:string) => {
+export const isJapaneseMatch  = (inputStr:string, answer:string) => {
     // ひらがなをカタカナに変換する関数
     const toKatakana = (str:string) => {
       return str.replace(/[\u3041-\u3096]/g, (c) => {
