@@ -1,0 +1,66 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignore": ["node_modules", ".next", "**/zed/settings.json", ".vscode/settings.json"],
+        "ignoreUnknown": true
+	},
+	"formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 100
+    },
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "complexity": {
+                "noForEach": "off",
+                "noBannedTypes": "warn",
+                "useLiteralKeys": "warn",
+                "noExtraBooleanCast": "warn",
+                "useOptionalChain": "warn",
+                "noUselessCatch": "warn"
+            },
+            "suspicious": {
+                "noArrayIndexKey": "off",
+                "noExplicitAny": "warn"
+            },
+            "correctness": {
+                "useExhaustiveDependencies": "off",
+                "noEmptyPattern": "warn",
+                "noSwitchDeclarations": "warn",
+                "noUnusedImports": "warn",
+                "noUnusedVariables": "warn"
+            },
+            "style": {
+                "noUnusedTemplateLiteral": "warn",
+                "noUselessElse": "warn",
+                "useTemplate": "warn",
+                "useExponentiationOperator": "warn",
+                "useSelfClosingElements": "warn",
+                "useImportType":"off"
+            },
+            "a11y": {
+                "useButtonType": "warn",
+                "useKeyWithClickEvents": "off",
+                "useValidAnchor": "warn"
+            }
+        }
+    },
+	"javascript": {
+		"formatter": {
+            "jsxQuoteStyle": "double",
+            "semicolons": "always",
+            "quoteStyle": "single"
+        }
+	}
+}
