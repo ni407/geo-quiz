@@ -63,8 +63,8 @@ export default function Page() {
         }
         else {
             alert("不正解です。");
+            setUserInput("");
         }
-        setUserInput("");
     };
     const ref = useRef<HTMLInputElement>(null);
 
@@ -112,13 +112,22 @@ export default function Page() {
         }
     },[])
 
+    const showAnswer = () => {
+        if (selectedCountryName === null) {
+            alert("国を選択してください。");
+            return;
+        }
+        const translatedAnswer = translateCountryName(selectedCountryName);
+        alert(`答えは「${translatedAnswer}」です。`);
+    }
+
     const isFinished = useMemo(() => {
         return answeredCountriesNameSet.size === geographyData.objects.world.geometries.length;
     }, [answeredCountriesNameSet]);
 
     useEffect(() => {
         if (isFinished) {
-            alert("すべての国を答えました!Congratulations!");
+            alert("すべての国を答えました！\nあなたこそ世界の国マスターです！");
             clearSaveData();
         }
     }, [isFinished]);
@@ -148,7 +157,6 @@ export default function Page() {
                             ))                                
                             }
                     </Geographies>
-                    
                 </ZoomableGroup>
             </ComposableMap>
             <div className="fixed bottom-0 left-0 w-full rounded bg-amber-100 p-4" style={{height:DrawerHeight}}>
@@ -167,9 +175,18 @@ export default function Page() {
                     />
                     <button
                         type="submit"
-                        className=" bg-blue-500 text-white p-2 rounded w-36"                        
+                        className=" bg-blue-500 text-white p-2 rounded w-36 cursor-pointer disabled:bg-gray-300"        
+                        disabled={userInput === "" || selectedCountryName === null}                
                     >
                         回答
+                    </button>
+                    <button
+                        type="button"
+                        className=" bg-red-400 text-white p-2 rounded w-36 cursor-pointer disabled:bg-gray-300"
+                        onClick={showAnswer}
+                        disabled={selectedCountryName === null}
+                    >
+                        カンニング
                     </button>
                 </form>
             </div>
