@@ -113,7 +113,7 @@ export default function Page() {
     },[])
 
     const isFinished = useMemo(() => {
-        return answeredCountriesNameSet.size === 3;
+        return answeredCountriesNameSet.size === geographyData.objects.world.geometries.length;
     }, [answeredCountriesNameSet]);
 
     useEffect(() => {
