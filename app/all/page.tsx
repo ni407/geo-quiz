@@ -1,84 +1,80 @@
 'use client';
-import { getCoordinates } from '@/lib/coordinates';
-import { geographyData } from '@/lib/geography';
-import { checkAnswer, getJpNames } from '@/lib/ja_name';
-import { getRegion } from '@/lib/region';
+import { Geometry, geographyData } from '@/lib/geography';
+import { checkAnswer, useWindowSize } from '@/lib/util';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FaFlag } from 'react-icons/fa';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
 
 export default function Page() {
-    const [selectedCountryName, setSelectedCountryName] = useState<string | null>(null);
+    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(null);
     const [userInput, setUserInput] = useState<string>('');
-    const coordinates = useMemo(
-        () => (selectedCountryName ? getCoordinates(selectedCountryName) : null),
-        [selectedCountryName],
-    );
+
     const [zoomRate, setZoomRate] = useState<number>(1);
 
-    const handleCountryClick = (geo: any) => {
-        if (answeredCountriesNameSet.has(geo.properties.name)) {
-            const translatedAnswer = getJpNames(geo.properties.name)[0];
-            alert(translatedAnswer);
+    const handleCountryClick = (geo: Geometry) => {
+        if (answeredCountriesMap.has(geo.id)) {
+            alert(selectedCountry?.properties.jpNames[0]);
             ref.current?.focus();
             return;
         }
-        setSelectedCountryName(geo.properties.name);
+        setSelectedCountry(geo);
         setUserInput('');
+        setZoomRate(2);
         ref.current?.focus();
     };
 
     const DrawerHeight = 140;
 
-    const [answeredCountriesNameSet, setAnsweredCountriesNameSet] = useState<Set<string>>(
-        new Set(),
+    const [answeredCountriesMap, setAnsweredCountriesMap] = useState<Map<string, Geometry>>(
+        new Map(),
     );
     const getDefaultBgColor = useMemo(
-        () => (countryName: string) => {
-            if (answeredCountriesNameSet.has(countryName)) {
+        () => (countryId: string) => {
+            if (answeredCountriesMap.has(countryId)) {
                 return '#A0D3FF';
             }
 
-            if (countryName === selectedCountryName) {
+            if (countryId === selectedCountry?.id) {
                 return '#E42';
             }
             return '#EAEAEA';
         },
-        [selectedCountryName, answeredCountriesNameSet],
+        [selectedCountry, answeredCountriesMap],
     );
 
     const getHoverBgColor = useMemo(
-        () => (countryName: string) => {
-            if (answeredCountriesNameSet.has(countryName)) {
+        () => (countryId: string) => {
+            if (answeredCountriesMap.has(countryId)) {
                 return '#A0D3FF';
             }
             return '#F53';
         },
-        [answeredCountriesNameSet],
+        [answeredCountriesMap],
     );
 
     const getPressedBgColor = useMemo(
-        () => (countryName: string) => {
-            if (answeredCountriesNameSet.has(countryName)) {
+        () => (countryId: string) => {
+            if (answeredCountriesMap.has(countryId)) {
                 return '#A0D3FF';
             }
             return '#E42';
         },
-        [answeredCountriesNameSet],
+        [answeredCountriesMap],
     );
 
     const answer = () => {
-        if (selectedCountryName === null) {
+        if (selectedCountry === null) {
             alert('国を選択してください。');
             return;
         }
-        if (checkAnswer(userInput, selectedCountryName)) {
-            const newSet = new Set([...answeredCountriesNameSet, selectedCountryName]);
-            setAnsweredCountriesNameSet(newSet);
+        if (checkAnswer(userInput, selectedCountry.properties.jpNames)) {
+            const newMap = new Map(answeredCountriesMap);
+            newMap.set(selectedCountry.id, selectedCountry);
+            setAnsweredCountriesMap(newMap);
             setUserInput('');
             alert('正解です！');
-            save(newSet);
-            selectRandomUnansweredCountry(selectedCountryName);
+            save(newMap);
+            selectRandomUnansweredCountry(selectedCountry);
         } else {
             alert('不正解です。');
             setUserInput('');
@@ -87,53 +83,51 @@ export default function Page() {
     };
     const ref = useRef<HTMLInputElement>(null);
 
-    const selectRandomUnansweredCountry = (beforeCountryName?: string) => {
+    const selectRandomUnansweredCountry = (beforeCountry?: Geometry) => {
         const unansweredCountries = geographyData.objects.world.geometries.filter(
             (geo) =>
-                !answeredCountriesNameSet.has(geo.properties.name) &&
-                beforeCountryName !== geo.properties.name,
+                !answeredCountriesMap.has(geo.id) &&
+                (beforeCountry ? beforeCountry.id !== geo.id : true),
         );
-        if (unansweredCountries.length === 0) {
-            alert('すべての国を答えました！');
-            return;
-        }
+        if (unansweredCountries.length === 0) return;
+
         let targetCountries = unansweredCountries;
-        if (beforeCountryName) {
-            const sameRegionCountries = unansweredCountries.filter((geo) => {
-                const region = getRegion(geo.properties.name);
-                const selectedRegion = getRegion(beforeCountryName);
-                return region === selectedRegion;
-            });
+        if (beforeCountry) {
+            const sameRegionCountries = unansweredCountries.filter(
+                (geo) => geo.properties.region === beforeCountry.properties.region,
+            );
             if (sameRegionCountries.length > 0) {
                 targetCountries = sameRegionCountries;
             }
         }
 
         const randomIndex = Math.floor(Math.random() * targetCountries.length);
-        const randomCountryName = targetCountries[randomIndex].properties.name;
-        setSelectedCountryName(randomCountryName);
+        const randomCountry = targetCountries[randomIndex];
+        setSelectedCountry(randomCountry);
         setZoomRate(2);
+        ref.current?.focus();
     };
 
-    const save = (countriesNameSet: Set<string>) => {
-        const answeredCountriesNameSetString = JSON.stringify(Array.from(countriesNameSet));
-        localStorage.setItem('answeredCountriesNameSet', answeredCountriesNameSetString);
+    const LocalStorageKey = 'all-answeredCountriesMap';
+    const save = (countriesMap: Map<string, Geometry>) => {
+        const answeredCountriesMapString = JSON.stringify(Array.from(countriesMap));
+        localStorage.setItem(LocalStorageKey, answeredCountriesMapString);
     };
     const load = () => {
-        const answeredCountriesNameSetString = localStorage.getItem('answeredCountriesNameSet');
-        if (answeredCountriesNameSetString) {
-            const answeredCountriesNameSetArray = JSON.parse(answeredCountriesNameSetString);
-            const answeredCountriesNameSet = new Set(answeredCountriesNameSetArray);
-            setAnsweredCountriesNameSet(answeredCountriesNameSet as Set<string>);
+        const answeredCountriesMapString = localStorage.getItem(LocalStorageKey);
+        if (answeredCountriesMapString) {
+            const answeredCountriesMapArray = JSON.parse(answeredCountriesMapString);
+            const answeredCountriesMap = new Map(answeredCountriesMapArray);
+            setAnsweredCountriesMap(answeredCountriesMap as Map<string, Geometry>);
         }
     };
     const clearSaveData = () => {
-        localStorage.removeItem('answeredCountriesNameSet');
-        setAnsweredCountriesNameSet(new Set());
+        localStorage.removeItem(LocalStorageKey);
+        setAnsweredCountriesMap(new Map());
     };
 
     useEffect(() => {
-        if (localStorage.getItem('answeredCountriesNameSet')) {
+        if (localStorage.getItem(LocalStorageKey)) {
             if (confirm('前回の途中から再開しますか？')) {
                 load();
                 selectRandomUnansweredCountry();
@@ -144,18 +138,17 @@ export default function Page() {
     }, []);
 
     const showAnswer = () => {
-        if (selectedCountryName === null) {
+        if (selectedCountry === null) {
             alert('国を選択してください。');
             return;
         }
-        const translatedAnswer = getJpNames(selectedCountryName)[0];
-        alert(`答えは「${translatedAnswer}」です。`);
+        alert(`答えは「${selectedCountry.properties.jpNames[0]}」です。`);
         ref.current?.focus();
     };
 
     const isFinished = useMemo(() => {
-        return answeredCountriesNameSet.size === geographyData.objects.world.geometries.length;
-    }, [answeredCountriesNameSet]);
+        return answeredCountriesMap.size === geographyData.objects.world.geometries.length;
+    }, [answeredCountriesMap]);
 
     useEffect(() => {
         if (isFinished) {
@@ -164,11 +157,17 @@ export default function Page() {
         }
     }, [isFinished]);
 
+    const size = useWindowSize();
+
     return (
-        <div className={`overflow-hidden w-screen h-[calc(100vh-${DrawerHeight}px)]`}>
-            <ComposableMap>
-                <ZoomableGroup center={coordinates ?? undefined} zoom={zoomRate}>
-                    <Geographies geography={geographyData} className="relative">
+        <div className={`overflow-hidden w-screen  h-[calc(100vh-${DrawerHeight}px)]`}>
+            <ComposableMap
+                projection="geoEqualEarth"
+                width={size[0]}
+                height={size[1] - DrawerHeight < 0 ? 0 : size[1] - DrawerHeight}
+            >
+                <ZoomableGroup center={selectedCountry?.properties.coordinates} zoom={zoomRate}>
+                    <Geographies geography={geographyData}>
                         {({ geographies }) =>
                             geographies.map((geo) => (
                                 <Geography
@@ -180,17 +179,20 @@ export default function Page() {
                                         handleCountryClick(geo);
                                     }}
                                     style={{
-                                        default: { fill: getDefaultBgColor(geo.properties.name) },
-                                        hover: { fill: getHoverBgColor(geo.properties.name) },
-                                        pressed: { fill: getPressedBgColor(geo.properties.name) },
+                                        default: { fill: getDefaultBgColor(geo.id) },
+                                        hover: { fill: getHoverBgColor(geo.id) },
+                                        pressed: { fill: getPressedBgColor(geo.id) },
                                     }}
                                     className="focus:outline-none"
                                 />
                             ))
                         }
                     </Geographies>
-                    {coordinates && (
-                        <Marker coordinates={coordinates} className="-translate-y-[16px]">
+                    {selectedCountry && (
+                        <Marker
+                            coordinates={selectedCountry.properties.coordinates}
+                            className="-translate-y-[15px]"
+                        >
                             <FaFlag className=" text-yellow-400 size-4" />
                         </Marker>
                     )}
@@ -201,7 +203,7 @@ export default function Page() {
                 style={{ height: DrawerHeight }}
             >
                 <p className="text-xl font-bold">
-                    現在の回答状況：{answeredCountriesNameSet.size}/
+                    現在の回答状況：{answeredCountriesMap.size}/
                     {geographyData.objects.world.geometries.length}カ国
                 </p>
                 <form
@@ -222,7 +224,7 @@ export default function Page() {
                     <button
                         type="submit"
                         className=" bg-blue-500 text-white p-2 rounded w-36 cursor-pointer disabled:bg-gray-300"
-                        disabled={userInput === '' || selectedCountryName === null}
+                        disabled={userInput === '' || selectedCountry === null}
                     >
                         回答
                     </button>
@@ -230,7 +232,7 @@ export default function Page() {
                         type="button"
                         className=" bg-red-400 text-white p-2 rounded w-36 cursor-pointer disabled:bg-gray-300"
                         onClick={showAnswer}
-                        disabled={selectedCountryName === null}
+                        disabled={selectedCountry === null}
                     >
                         カンニング
                     </button>
