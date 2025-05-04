@@ -1,20 +1,35 @@
 'use client';
 import { MapDrawer, MapLayoout } from '@/component/layout';
 import { AnswerForm, CheetButton, CurrentStatus, GeographyMap } from '@/component/map';
-import { Geometry, geographyData } from '@/lib/geography';
-import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
+import { Geometry } from '@/lib/geography';
+import {
+    getOneRegionGeographyData,
+    pickRandomUnAnsweredCountry,
+    useLocalStorage,
+} from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
-    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(null);
+    const geographyData = getOneRegionGeographyData('北アメリカ');
+    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'USA');
+    const LocalStorageKey = 'northamerica-answeredCountriesMap';
+    const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
+
+    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<Map<string, Geometry>>(
         new Map(),
     );
 
     const [userInput, setUserInput] = useState<string>('');
-    const defaultZoomRate = 1;
-    const [zoomRate, setZoomRate] = useState<number>(defaultZoomRate);
     const ref = useRef<HTMLInputElement>(null);
+
+    const defaultZoomRate = 2;
+    const [zoomRate, setZoomRate] = useState<number>(1);
+
+    //初期値からdefaultZoomRateを適用すると、地図の中心がズレる前の位置で拡大されてしまうため。
+    useEffect(() => {
+        setZoomRate(defaultZoomRate);
+    }, []);
 
     const selectRandomUnansweredCountry = () => {
         const randomCountry = pickRandomUnAnsweredCountry(
@@ -23,12 +38,8 @@ export default function Page() {
         );
         if (!randomCountry) return;
         setSelectedCountry(randomCountry);
-        setZoomRate(2);
         ref.current?.focus();
     };
-
-    const LocalStorageKey = 'all-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
 
     useEffect(() => {
         if (localStorage.getItem(LocalStorageKey)) {
@@ -52,7 +63,8 @@ export default function Page() {
                 setSelectedCountry={setSelectedCountry}
                 setZoomRate={setZoomRate}
                 setUserInput={setUserInput}
-                mapScale={250}
+                mapCenter={startCountry?.properties.coordinates}
+                mapScale={300}
             />
             <MapDrawer>
                 <CurrentStatus

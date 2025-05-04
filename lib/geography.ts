@@ -1,10 +1,18 @@
+export type Region =
+    | 'アジア'
+    | 'アフリカ'
+    | '北アメリカ'
+    | '南アメリカ'
+    | 'ヨーロッパ'
+    | 'オセアニア';
+
 export interface Geometry {
     type: string;
     arcs: any;
     id: string;
     properties: {
         name: string;
-        region: string;
+        region: Region;
         jpNames: string[];
         coordinates: [number, number];
     };
@@ -92,20 +100,6 @@ export const geographyData: GeographyData = {
                         region: 'アジア',
                         jpNames: ['アルメニア'],
                         coordinates: [44.5034, 40.1772],
-                    },
-                },
-                {
-                    type: 'Polygon',
-                    arcs: [[36]],
-                    id: 'ATF',
-                    properties: {
-                        name: 'French Southern Territories',
-                        region: '南極',
-                        jpNames: [
-                            'フランス領南方・南極地域',
-                            'ふらんすりょうなんぽうなんきょくちいき',
-                        ],
-                        coordinates: [69.35, -49.25],
                     },
                 },
                 {
@@ -2365,6 +2359,17 @@ export const geographyData: GeographyData = {
                         region: 'アフリカ',
                         jpNames: ['サントメ・プリンシペ', 'サントメプリンシペ'],
                         coordinates: [6.7295, 0.3365],
+                    },
+                },
+                {
+                    type: 'Polygon',
+                    arcs: [[768]],
+                    id: 'VAT',
+                    properties: {
+                        name: 'Vatican City',
+                        region: 'ヨーロッパ',
+                        jpNames: ['バチカン市国', 'バチカンしこく', 'バチカン'],
+                        coordinates: [12.4534, 41.9029],
                     },
                 },
             ],
@@ -12296,6 +12301,20 @@ export const geographyData: GeographyData = {
             [6.46, 0.21],
             [6.49, 0.31],
             [6.66, 0.42],
+        ],
+        [
+            [12.37, 43.93],
+            [12.44, 43.98],
+            [12.51, 43.95],
+            [12.48, 43.89],
+            [12.4, 43.89],
+            [12.37, 43.93],
+        ],
+        [
+            [12.4527, 41.9042],
+            [12.4539, 41.9005],
+            [12.4552, 41.9022],
+            [12.4516, 41.9032],
         ],
     ],
     bbox: [-180, -55.61183, 180, 83.64513],

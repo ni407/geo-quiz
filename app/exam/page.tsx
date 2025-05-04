@@ -1,6 +1,6 @@
 'use client';
 import { MapDrawer, MapLayoout } from '@/component/layout';
-import { AnswerForm, CheetButton, CurrentStatus, GeographyMap } from '@/component/map';
+import { AnswerForm, CurrentStatus, GeographyMap } from '@/component/map';
 import { Geometry, geographyData } from '@/lib/geography';
 import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
@@ -10,10 +10,12 @@ export default function Page() {
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<Map<string, Geometry>>(
         new Map(),
     );
+    const LocalStorageKey = 'exam-answeredCountriesMap';
+    const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
 
     const [userInput, setUserInput] = useState<string>('');
     const defaultZoomRate = 1;
-    const [zoomRate, setZoomRate] = useState<number>(defaultZoomRate);
+    const [zoomRate, setZoomRate] = useState<number>(1);
     const ref = useRef<HTMLInputElement>(null);
 
     const selectRandomUnansweredCountry = () => {
@@ -27,9 +29,6 @@ export default function Page() {
         ref.current?.focus();
     };
 
-    const LocalStorageKey = 'all-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
-
     useEffect(() => {
         if (localStorage.getItem(LocalStorageKey)) {
             if (confirm('前回の途中から再開しますか？')) {
@@ -40,6 +39,20 @@ export default function Page() {
             clearSaveData(setAnsweredCountriesMap);
         }
     }, []);
+
+    const finishAnswering = () => {
+        if (confirm('本当に終了しますか？')) {
+            alert(
+                `あなたのスコアは\n${answeredCountriesMap.size}/${geographyData.objects.world.geometries.length}点です！`,
+            );
+
+            localStorage.removeItem(LocalStorageKey);
+
+            setAnsweredCountriesMap(new Map());
+            setSelectedCountry(null);
+            setUserInput('');
+        }
+    };
 
     return (
         <MapLayoout>
@@ -87,7 +100,13 @@ export default function Page() {
                     >
                         回答
                     </button>
-                    <CheetButton selectedCountry={selectedCountry} inputRef={ref} />
+                    <button
+                        type="button"
+                        onClick={finishAnswering}
+                        className=" bg-blue-500 text-white test-xs md:text-base p-2 rounded w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300"
+                    >
+                        回答終了
+                    </button>
                 </AnswerForm>
             </MapDrawer>
         </MapLayoout>

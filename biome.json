@@ -52,7 +52,8 @@
             "a11y": {
                 "useButtonType": "warn",
                 "useKeyWithClickEvents": "off",
-                "useValidAnchor": "warn"
+                "useValidAnchor": "warn",
+                "noAutofocus":"off"
             }
         }
     },

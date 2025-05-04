@@ -1,20 +1,30 @@
 'use client';
 import { MapDrawer, MapLayoout } from '@/component/layout';
 import { AnswerForm, CheetButton, CurrentStatus, GeographyMap } from '@/component/map';
-import { Geometry, geographyData } from '@/lib/geography';
-import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
+import { Geometry } from '@/lib/geography';
+import {
+    getOneRegionGeographyData,
+    pickRandomUnAnsweredCountry,
+    useLocalStorage,
+} from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
-    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(null);
+    const geographyData = getOneRegionGeographyData('アジア');
+    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'JPN'); // 日本
+    const LocalStorageKey = 'asia-answeredCountriesMap';
+    const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
+
+    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<Map<string, Geometry>>(
         new Map(),
     );
 
     const [userInput, setUserInput] = useState<string>('');
-    const defaultZoomRate = 1;
-    const [zoomRate, setZoomRate] = useState<number>(defaultZoomRate);
     const ref = useRef<HTMLInputElement>(null);
+
+    const defaultZoomRate = 1;
+    const [zoomRate, setZoomRate] = useState<number>(1);
 
     const selectRandomUnansweredCountry = () => {
         const randomCountry = pickRandomUnAnsweredCountry(
@@ -23,12 +33,8 @@ export default function Page() {
         );
         if (!randomCountry) return;
         setSelectedCountry(randomCountry);
-        setZoomRate(2);
         ref.current?.focus();
     };
-
-    const LocalStorageKey = 'all-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
 
     useEffect(() => {
         if (localStorage.getItem(LocalStorageKey)) {
@@ -52,7 +58,8 @@ export default function Page() {
                 setSelectedCountry={setSelectedCountry}
                 setZoomRate={setZoomRate}
                 setUserInput={setUserInput}
-                mapScale={250}
+                mapCenter={startCountry?.properties.coordinates}
+                mapScale={500}
             />
             <MapDrawer>
                 <CurrentStatus
