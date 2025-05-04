@@ -15,8 +15,9 @@ export default function Page() {
     const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
 
     const [userInput, setUserInput] = useState<string>('');
-    const defaultZoomRate = 1;
+    const defaultZoomRate = 1.5;
     const [zoomRate, setZoomRate] = useState<number>(1);
+
     const ref = useRef<HTMLInputElement>(null);
 
     const selectRandomUnansweredCountry = () => {
@@ -26,7 +27,7 @@ export default function Page() {
         );
         if (!randomCountry) return;
         setSelectedCountry(randomCountry);
-        setZoomRate(2);
+        setZoomRate(defaultZoomRate);
         ref.current?.focus();
     };
 
