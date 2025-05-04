@@ -1,4 +1,5 @@
 'use client';
+import { Modal } from '@/component/common';
 import { MapDrawer, MapLayoout } from '@/component/layout';
 import { AnswerForm, CurrentStatus, GeographyMap } from '@/component/map';
 import { Geometry, geographyData } from '@/lib/geography';
@@ -42,15 +43,30 @@ export default function Page() {
 
     const finishAnswering = () => {
         if (confirm('本当に終了しますか？')) {
-            alert(
-                `あなたのスコアは\n${answeredCountriesMap.size}/${geographyData.objects.world.geometries.length}点です！`,
-            );
+            setFinishModalVisible(true);
+        }
+    };
+    const [finishModalVisible, setFinishModalVisible] = useState(false);
+    const onClose = () => {
+        setAnsweredCountriesMap(new Map());
+        setSelectedCountry(null);
+        setUserInput('');
+        localStorage.removeItem(LocalStorageKey);
+    };
 
-            localStorage.removeItem(LocalStorageKey);
+    const copyToClipboard = async () => {
+        const text = `国名マスターに挑戦しました！\n
+わたしのスコアは
+${answeredCountriesMap.size}点(${geographyData.objects.world.geometries.length}点中） \nでした！\n
+みんなも挑戦してみてね！
+${location.origin}
+`;
 
-            setAnsweredCountriesMap(new Map());
-            setSelectedCountry(null);
-            setUserInput('');
+        try {
+            await navigator.clipboard.writeText(text);
+            alert('コピーしました！');
+        } catch (err) {
+            alert('コピーに失敗しました。');
         }
     };
 
@@ -109,6 +125,33 @@ export default function Page() {
                     </button>
                 </AnswerForm>
             </MapDrawer>
+            <Modal
+                visible={finishModalVisible}
+                setVisible={setFinishModalVisible}
+                onClose={onClose}
+                title={''}
+                footer={null}
+            >
+                <div className="flex flex-col items-center justify-center h-full">
+                    <h2 className="text-xl font-bold mb-4">
+                        あなたのスコアは
+                        <span className="text-3xl font-extrabold mx-4">
+                            {answeredCountriesMap.size}点
+                        </span>
+                        ({geographyData.objects.world.geometries.length}点中） です！
+                    </h2>
+                    <p className="text-lg mb-4">またの挑戦をお待ちしています！</p>
+                    <div className="mt-4">
+                        <button
+                            type="button"
+                            className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
+                            onClick={copyToClipboard}
+                        >
+                            スコアをコピぺしてシェア
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </MapLayoout>
     );
 }
