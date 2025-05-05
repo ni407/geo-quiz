@@ -204,7 +204,7 @@ export const countryIsoCodes: Record<string, string> = {
     STP: 'ST',
 };
 
-export const convertIdToIsoCode = (id: string): string | null => {
+export const convertIdToIsoCode = (id: string): string => {
     const isoCode = countryIsoCodes[id];
     if (!isoCode) {
         throw new Error(`Invalid country ID: ${id}`);
