@@ -76,7 +76,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'United Arab Emirates',
                         region: 'アジア',
-                        jpNames: ['アラブ首長国連邦', 'UAE', 'あらぶしゅちょうこくれんぽう'],
+                        jpNames: ['アラブ首長国連邦', 'UAE', 'あらぶしゅちょうこくれんぽう', 'uae'],
                         coordinates: [54.3773, 24.4539],
                     },
                 },
@@ -1991,13 +1991,9 @@ export const geographyData: GeographyData = {
                     arcs: [[-417, -404]],
                     id: 'PSX',
                     properties: {
-                        name: 'West Bank',
+                        name: 'Palestine',
                         region: 'アジア',
-                        jpNames: [
-                            'ヨルダン川西岸地区',
-                            'ヨルダン川西岸',
-                            'よるだんがわせいがんちく',
-                        ],
+                        jpNames: ['パレスチナ'],
                         coordinates: [35.2, 31.9],
                     },
                 },

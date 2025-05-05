@@ -1,3 +1,4 @@
+import { getFlagImageUrl } from '@/lib/flag';
 import { GeographyData, Geometry } from '@/lib/geography';
 import {
     checkAnswer,
@@ -95,21 +96,29 @@ export const GeographyMap: FunctionComponent<{
                 <Geographies geography={geographyData}>
                     {({ geographies }) =>
                         geographies.map((geo) => (
-                            <Geography
-                                key={geo.rsmKey}
-                                geography={geo}
-                                stroke="#FFF"
-                                strokeWidth={0.3}
-                                onClick={() => {
-                                    handleCountryClick(geo);
-                                }}
-                                style={{
-                                    default: { fill: getDefaultBgColor(geo.id) },
-                                    hover: { fill: getHoverBgColor(geo.id) },
-                                    pressed: { fill: getPressedBgColor(geo.id) },
-                                }}
-                                className="focus:outline-none"
-                            />
+                            <g key={geo.rsmKey}>
+                                <Geography
+                                    key={geo.rsmKey}
+                                    geography={geo}
+                                    stroke="#FFF"
+                                    strokeWidth={0.3}
+                                    onClick={() => {
+                                        handleCountryClick(geo);
+                                    }}
+                                    style={{
+                                        default: { fill: getDefaultBgColor(geo.id) },
+                                        hover: { fill: getHoverBgColor(geo.id) },
+                                        pressed: { fill: getPressedBgColor(geo.id) },
+                                    }}
+                                    className="focus:outline-none"
+                                />
+                                <img
+                                    src={getFlagImageUrl(geo.id)}
+                                    alt={geo.id}
+                                    width={256}
+                                    height={192}
+                                />
+                            </g>
                         ))
                     }
                 </Geographies>
