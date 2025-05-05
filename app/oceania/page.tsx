@@ -64,7 +64,7 @@ export default function Page() {
                 setZoomRate={setZoomRate}
                 setUserInput={setUserInput}
                 mapCenter={startCountry?.properties.coordinates}
-                mapScale={300}
+                mapScale={200}
             />
             <MapDrawer>
                 <CurrentStatus

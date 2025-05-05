@@ -23,8 +23,12 @@ export default function Page() {
     const [userInput, setUserInput] = useState<string>('');
     const ref = useRef<HTMLInputElement>(null);
 
-    const defaultZoomRate = 1;
+    const defaultZoomRate = 2;
     const [zoomRate, setZoomRate] = useState<number>(1);
+    //初期値からdefaultZoomRateを適用すると、地図の中心がズレる前の位置で拡大されてしまうため。
+    useEffect(() => {
+        setZoomRate(defaultZoomRate);
+    }, []);
 
     const selectRandomUnansweredCountry = () => {
         const randomCountry = pickRandomUnAnsweredCountry(
@@ -59,7 +63,7 @@ export default function Page() {
                 setZoomRate={setZoomRate}
                 setUserInput={setUserInput}
                 mapCenter={startCountry?.properties.coordinates}
-                mapScale={500}
+                mapScale={200}
             />
             <MapDrawer>
                 <CurrentStatus

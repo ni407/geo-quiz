@@ -15,7 +15,8 @@ export const Modal: FunctionComponent<{
     onClose: (() => void) | null;
     title: string | React.ReactNode | null;
     footer: React.ReactNode | null;
-}> = ({ children, visible, setVisible, onClose, title, footer }) => {
+    closeWhenClickOutside?: boolean;
+}> = ({ children, visible, setVisible, onClose, title, footer, closeWhenClickOutside = false }) => {
     const rootEl = useRef<HTMLElement | null>(null);
 
     useEffect(() => {
@@ -30,7 +31,7 @@ export const Modal: FunctionComponent<{
                 fixed
                 top-0
                 w-full
-                h-full
+                h-full 
                 bg-neutral-600/50
                 backdrop-blur-sm
                 transition-opacity
@@ -38,15 +39,17 @@ export const Modal: FunctionComponent<{
                 duration-200 ease-in-out
             `}
                 onPointerDown={() => {
-                    if (onClose) {
-                        onClose();
+                    if (closeWhenClickOutside) {
+                        if (onClose) {
+                            onClose();
+                        }
+                        setVisible(false);
                     }
-                    setVisible(false);
                 }}
             >
                 <div
                     className={`
-                        bg-white w-[800px] mx-auto mt-6 p-6 rounded-md flex flex-col
+                        bg-white w-11/12 max-w-[800px] mx-auto mt-6 p-6 rounded-md flex flex-col
                         duration-100 ease-in-out
                         ${visible ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}
                     `}
