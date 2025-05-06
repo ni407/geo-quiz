@@ -1,4 +1,5 @@
 'use client';
+import { BackButton } from '@/component/layout';
 import { GeographyMap } from '@/component/map';
 import { getFlagImageUrl } from '@/lib/flag';
 import { Geometry, Region, geographyData as allGeographyData, regions } from '@/lib/geography';
@@ -34,7 +35,8 @@ export default function Dictionary() {
 
     return (
         <div className="min-h-screen p-4 bg-gray-100">
-            <div className="flex items-start justify-start gap-x-8 my-8">
+            <BackButton />
+            <div className="flex items-start justify-start gap-x-8 my-16">
                 <div className="">
                     <RegionSelector selectedRegion={selectedRegion} changeRegion={changeRegion} />
                     <ul className="my-4 ml-4 flex flex-col gap-y-2">
@@ -54,7 +56,7 @@ export default function Dictionary() {
                         <div className="flex flex-col justify-center items-center h-full">
                             {selectedCountry && (
                                 <div className="">
-                                    <h2 className="text-xl font-bold mb-4">
+                                    <h2 className="text-xl text-center font-bold mb-4">
                                         {selectedCountry.properties.jpNames[0]}
                                     </h2>
                                     <img
