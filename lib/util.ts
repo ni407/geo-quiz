@@ -48,17 +48,17 @@ export const useLocalStorage = (LocalStorageKey: string) => {
         const answeredCountriesMapString = JSON.stringify(Array.from(countriesMap));
         localStorage.setItem(LocalStorageKey, answeredCountriesMapString);
     };
-    const load = (updateAnsweredCountriesMap: (map: Map<string, Geometry>) => void) => {
+    const load = (): Map<string, Geometry> => {
         const answeredCountriesMapString = localStorage.getItem(LocalStorageKey);
         if (answeredCountriesMapString) {
             const answeredCountriesMapArray = JSON.parse(answeredCountriesMapString);
             const answeredCountriesMap = new Map(answeredCountriesMapArray);
-            updateAnsweredCountriesMap(answeredCountriesMap as Map<string, Geometry>);
+            return answeredCountriesMap as Map<string, Geometry>;
         }
+        return new Map();
     };
-    const clearSaveData = (updateAnsweredCountriesMap: (map: Map<string, Geometry>) => void) => {
+    const clearSaveData = () => {
         localStorage.removeItem(LocalStorageKey);
-        updateAnsweredCountriesMap(new Map());
     };
 
     return { save, load, clearSaveData };

@@ -31,10 +31,10 @@ export default function Page() {
         setZoomRate(defaultZoomRate);
     }, []);
 
-    const selectRandomUnansweredCountry = () => {
+    const selectRandomUnansweredCountry = (countriesMap: Map<string, Geometry>) => {
         const randomCountry = pickRandomUnAnsweredCountry(
             geographyData.objects.world.geometries,
-            answeredCountriesMap,
+            countriesMap,
         );
         if (!randomCountry) return;
         setSelectedCountry(randomCountry);
@@ -44,11 +44,13 @@ export default function Page() {
     useEffect(() => {
         if (localStorage.getItem(LocalStorageKey)) {
             if (confirm('前回の途中から再開しますか？')) {
-                load(setAnsweredCountriesMap);
-                selectRandomUnansweredCountry();
+                const savedAnswerMap = load();
+                setAnsweredCountriesMap(savedAnswerMap);
+                selectRandomUnansweredCountry(savedAnswerMap);
                 return;
             }
-            clearSaveData(setAnsweredCountriesMap);
+            clearSaveData();
+            setAnsweredCountriesMap(new Map());
         }
     }, []);
 

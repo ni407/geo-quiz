@@ -223,7 +223,8 @@ export const AnswerForm: FunctionComponent<{
 
         if (newMap.size === geometries.length) {
             alert('すべての国を答えました！\nあなたこそ世界の国マスターです！');
-            clearSaveData(setAnsweredCountriesMap);
+            clearSaveData();
+            setAnsweredCountriesMap(new Map());
             return;
         }
 
