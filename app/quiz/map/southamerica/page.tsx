@@ -10,9 +10,9 @@ import {
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
-    const geographyData = getOneRegionGeographyData('オセアニア');
-    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'AUS');
-    const LocalStorageKey = 'oceania-answeredCountriesMap';
+    const geographyData = getOneRegionGeographyData('南アメリカ');
+    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'BRA'); // ブラジル
+    const LocalStorageKey = 'southamerica-answeredCountriesMap';
     const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
 
     const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
@@ -63,10 +63,9 @@ export default function Page() {
                 zoomRate={zoomRate}
                 inputRef={ref}
                 setSelectedCountry={setSelectedCountry}
-                setZoomRate={setZoomRate}
                 setUserInput={setUserInput}
                 mapCenter={startCountry?.properties.coordinates}
-                mapScale={200}
+                mapScale={250}
             />
             <MapDrawer>
                 <CurrentStatus

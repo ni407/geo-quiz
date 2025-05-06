@@ -10,9 +10,9 @@ import {
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
-    const geographyData = getOneRegionGeographyData('アジア');
-    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'JPN'); // 日本
-    const LocalStorageKey = 'asia-answeredCountriesMap';
+    const geographyData = getOneRegionGeographyData('オセアニア');
+    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'AUS');
+    const LocalStorageKey = 'oceania-answeredCountriesMap';
     const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
 
     const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
@@ -25,6 +25,7 @@ export default function Page() {
 
     const defaultZoomRate = 2;
     const [zoomRate, setZoomRate] = useState<number>(1);
+
     //初期値からdefaultZoomRateを適用すると、地図の中心がズレる前の位置で拡大されてしまうため。
     useEffect(() => {
         setZoomRate(defaultZoomRate);
@@ -62,7 +63,6 @@ export default function Page() {
                 zoomRate={zoomRate}
                 inputRef={ref}
                 setSelectedCountry={setSelectedCountry}
-                setZoomRate={setZoomRate}
                 setUserInput={setUserInput}
                 mapCenter={startCountry?.properties.coordinates}
                 mapScale={200}

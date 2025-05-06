@@ -10,9 +10,9 @@ import {
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
-    const geographyData = getOneRegionGeographyData('ヨーロッパ');
-    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'GBR'); // イギリス
-    const LocalStorageKey = 'eu-answeredCountriesMap';
+    const geographyData = getOneRegionGeographyData('北アメリカ');
+    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'USA');
+    const LocalStorageKey = 'northamerica-answeredCountriesMap';
     const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
 
     const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
@@ -63,7 +63,6 @@ export default function Page() {
                 zoomRate={zoomRate}
                 inputRef={ref}
                 setSelectedCountry={setSelectedCountry}
-                setZoomRate={setZoomRate}
                 setUserInput={setUserInput}
                 mapCenter={startCountry?.properties.coordinates}
                 mapScale={300}
@@ -93,7 +92,6 @@ export default function Page() {
                         value={userInput}
                         onChange={(e) => setUserInput(e.target.value)}
                         ref={ref}
-                        autoFocus={true}
                     />
                     <button
                         type="submit"

@@ -16,10 +16,9 @@ export const GeographyMap: FunctionComponent<{
     geographyData: GeographyData;
     answeredCountriesMap: Map<string, Geometry>;
     zoomRate: number;
-    inputRef: RefObject<HTMLInputElement | null>;
+    inputRef: RefObject<HTMLInputElement | null> | null;
     setSelectedCountry: Dispatch<SetStateAction<Geometry | null>>;
     setUserInput: Dispatch<SetStateAction<string>>;
-    setZoomRate: Dispatch<SetStateAction<number>>;
     mapScale: number;
     mapCenter?: [number, number];
 }> = ({
@@ -30,7 +29,6 @@ export const GeographyMap: FunctionComponent<{
     inputRef,
     setSelectedCountry,
     setUserInput,
-    setZoomRate,
     mapScale,
     mapCenter,
 }) => {
@@ -73,13 +71,13 @@ export const GeographyMap: FunctionComponent<{
     const handleCountryClick = (geo: Geometry) => {
         if (answeredCountriesMap.has(geo.id)) {
             alert(geo.properties.jpNames[0]);
-            inputRef.current?.focus();
+            inputRef?.current?.focus();
             return;
         }
         setSelectedCountry(geo);
         setUserInput('');
-        setZoomRate(2);
-        inputRef.current?.focus();
+
+        inputRef?.current?.focus();
     };
 
     return (

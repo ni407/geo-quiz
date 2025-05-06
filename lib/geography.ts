@@ -5,6 +5,14 @@ export type Region =
     | '南アメリカ'
     | 'ヨーロッパ'
     | 'オセアニア';
+export const regions: Region[] = [
+    'アジア',
+    'アフリカ',
+    '北アメリカ',
+    '南アメリカ',
+    'ヨーロッパ',
+    'オセアニア',
+];
 
 export interface Geometry {
     type: string;
