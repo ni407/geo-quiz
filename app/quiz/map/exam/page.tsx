@@ -110,7 +110,7 @@ ${location.origin}
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
                     <NextButton
                         onClick={() => {
-                            const nextCountryExceptions = answeredCountriesMap;
+                            const nextCountryExceptions = new Map(answeredCountriesMap);
                             if (selectedCountry) {
                                 nextCountryExceptions.set(selectedCountry?.id, selectedCountry);
                             }
