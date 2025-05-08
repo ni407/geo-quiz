@@ -162,12 +162,43 @@ export const CheetButton: FunctionComponent<{
     return (
         <button
             type="button"
-            className=" bg-red-400 text-white test-xs md:text-base p-2 rounded w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300"
+            className=" bg-red-400 text-white test-xs md:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300"
             onClick={showAnswer}
             disabled={selectedCountry === null}
         >
             カンニング
         </button>
+    );
+};
+
+export const NextButton: FunctionComponent<{
+    onClick: () => void;
+}> = ({ onClick }) => {
+    return (
+        <button
+            type="button"
+            className=" bg-green-500 text-white test-xs md:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300"
+            onClick={onClick}
+        >
+            次の国へ
+        </button>
+    );
+};
+
+export const AnswerInput: FunctionComponent<{
+    userInput: string;
+    setUserInput: Dispatch<SetStateAction<string>>;
+    inputRef: RefObject<HTMLInputElement | null>;
+}> = ({ userInput, setUserInput, inputRef }) => {
+    return (
+        <input
+            type="text"
+            placeholder="国名を入力（Enterで回答可）"
+            className="border p-2 rounded w-full focus:outline-none focus:ring focus:ring-blue-500"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            ref={inputRef}
+        />
     );
 };
 

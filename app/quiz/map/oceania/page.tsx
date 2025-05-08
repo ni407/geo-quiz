@@ -1,6 +1,13 @@
 'use client';
 import { MapDrawer, MapLayoout } from '@/component/layout';
-import { AnswerForm, CheetButton, CurrentStatus, GeographyMap } from '@/component/map';
+import {
+    AnswerForm,
+    AnswerInput,
+    CheetButton,
+    CurrentStatus,
+    GeographyMap,
+    NextButton,
+} from '@/component/map';
 import { Geometry } from '@/lib/geography';
 import {
     getOneRegionGeographyData,
@@ -85,21 +92,17 @@ export default function Page() {
                     defaultZoomRate={defaultZoomRate}
                     geometries={geographyData.objects.world.geometries}
                 >
-                    <input
-                        type="text"
-                        placeholder="国名を入力（Enterで回答可）"
-                        className="border p-2 rounded w-full focus:outline-none focus:ring focus:ring-[#F53]"
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        ref={ref}
+                    <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
+                    <NextButton
+                        onClick={() => {
+                            const nextCountryExceptions = answeredCountriesMap;
+                            if (selectedCountry) {
+                                nextCountryExceptions.set(selectedCountry?.id, selectedCountry);
+                            }
+
+                            selectRandomUnansweredCountry(nextCountryExceptions);
+                        }}
                     />
-                    <button
-                        type="submit"
-                        className=" bg-blue-500 text-white test-xs md:text-base p-2 rounded w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300"
-                        disabled={userInput === '' || selectedCountry === null}
-                    >
-                        回答
-                    </button>
                     <CheetButton selectedCountry={selectedCountry} inputRef={ref} />
                 </AnswerForm>
             </MapDrawer>
