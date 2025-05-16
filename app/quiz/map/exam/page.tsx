@@ -1,7 +1,13 @@
 'use client';
 import { Modal } from '@/component/common';
 import { MapDrawer, MapLayoout } from '@/component/layout';
-import { AnswerForm, AnswerInput, CurrentStatus, GeographyMap, NextButton } from '@/component/map';
+import {
+    AnswerForm,
+    AnswerInput,
+    CurrentStatus,
+    GeographyMap,
+    ShuffleButton,
+} from '@/component/map';
 import { Geometry, geographyData } from '@/lib/geography';
 import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
@@ -108,7 +114,7 @@ ${location.origin}
                     geometries={geographyData.objects.world.geometries}
                 >
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
-                    <NextButton
+                    <ShuffleButton
                         onClick={() => {
                             const nextCountryExceptions = new Map(answeredCountriesMap);
                             if (selectedCountry) {

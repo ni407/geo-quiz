@@ -6,9 +6,12 @@ import {
     useLocalStorage,
     useWindowSize,
 } from '@/lib/util';
-import { Dispatch, FunctionComponent, RefObject, SetStateAction, useMemo } from 'react';
+import { Dispatch, FunctionComponent, RefObject, SetStateAction, useMemo, useState } from 'react';
 import { FaFlag } from 'react-icons/fa';
+import { MdOutlineTipsAndUpdates, MdShuffle } from 'react-icons/md';
+import { PiEyesFill } from 'react-icons/pi';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
+import { Modal } from './common';
 import { DrawerHeight } from './layout';
 
 export const GeographyMap: FunctionComponent<{
@@ -162,26 +165,76 @@ export const CheetButton: FunctionComponent<{
     return (
         <button
             type="button"
-            className=" bg-red-400 text-white test-xs md:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300"
+            className=" bg-red-400 text-white test-xs lg:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300 flex items-center justify-center gap-x-1"
             onClick={showAnswer}
             disabled={selectedCountry === null}
         >
-            カンニング
+            <PiEyesFill className="size-6" />
+            <span className="hidden lg:block">カンニング</span>
         </button>
     );
 };
 
-export const NextButton: FunctionComponent<{
+export const ShuffleButton: FunctionComponent<{
     onClick: () => void;
 }> = ({ onClick }) => {
+    const shuffle = () => {
+        if (confirm('シャッフルしても良いですか？')) {
+            onClick();
+        }
+    };
+
     return (
         <button
             type="button"
-            className=" bg-green-500 text-white test-xs md:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300"
-            onClick={onClick}
+            className=" bg-green-500 text-white test-xs lg:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300 flex items-center justify-center gap-x-1"
+            onClick={shuffle}
         >
-            次の国へ
+            <MdShuffle className="size-6" />
+            <span className="hidden lg:block">シャッフル</span>
         </button>
+    );
+};
+
+export const HintButton: FunctionComponent<{
+    selectedCountry: Geometry | null;
+}> = ({ selectedCountry }) => {
+    if (!selectedCountry) return null;
+    const [showHint, setShowHint] = useState(false);
+    const onClick = () => {
+        if (confirm('ヒントを表示しても良いですか？')) {
+            setShowHint(true);
+        }
+    };
+
+    return (
+        <>
+            <button
+                type="button"
+                onClick={onClick}
+                className="bg-amber-500 text-white test-xs lg:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300 flex items-center justify-center gap-x-1"
+            >
+                <MdOutlineTipsAndUpdates className="size-6" />
+                <span className="hidden lg:block">ヒント</span>
+            </button>
+            <Modal
+                visible={showHint}
+                setVisible={setShowHint}
+                onClose={() => setShowHint(false)}
+                title="ヒント"
+                footer={null}
+                closeWhenClickOutside
+            >
+                <div className="flex flex-col items-center justify-center py-8">
+                    <img
+                        src={getFlagImageUrl(selectedCountry.id)}
+                        alt={selectedCountry.id}
+                        width={256}
+                        height={192}
+                    />
+                </div>
+            </Modal>
+        </>
     );
 };
 

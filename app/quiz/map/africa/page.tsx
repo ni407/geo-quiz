@@ -6,7 +6,8 @@ import {
     CheetButton,
     CurrentStatus,
     GeographyMap,
-    NextButton,
+    HintButton,
+    ShuffleButton,
 } from '@/component/map';
 import { Geometry } from '@/lib/geography';
 import {
@@ -93,7 +94,7 @@ export default function Page() {
                     geometries={geographyData.objects.world.geometries}
                 >
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
-                    <NextButton
+                    <ShuffleButton
                         onClick={() => {
                             const nextCountryExceptions = new Map(answeredCountriesMap);
                             if (selectedCountry) {
@@ -103,6 +104,7 @@ export default function Page() {
                             selectRandomUnansweredCountry(nextCountryExceptions);
                         }}
                     />
+                    <HintButton selectedCountry={selectedCountry} />
 
                     <CheetButton selectedCountry={selectedCountry} inputRef={ref} />
                 </AnswerForm>

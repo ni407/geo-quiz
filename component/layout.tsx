@@ -30,7 +30,7 @@ export const MapDrawer: FunctionComponent<{
 export const BackButton = () => {
     return (
         <Link
-            className="fixed top-5 left-5 bg-white text-black p-2 rounded-full flex items-center justify-center shadow-md"
+            className="fixed top-5 left-5 z-50 bg-white text-black p-2 rounded-full flex items-center justify-center shadow-md"
             href="/"
         >
             <IoIosArrowBack className="text-2xl" />

@@ -36,14 +36,14 @@ export default function Dictionary() {
     return (
         <div className="min-h-screen p-4 bg-gray-100">
             <BackButton />
-            <div className="flex items-start justify-start gap-x-8 my-16">
+            <div className="flex items-start justify-start gap-x-2 lg:gap-x-8 my-16">
                 <div className="">
                     <RegionSelector selectedRegion={selectedRegion} changeRegion={changeRegion} />
-                    <ul className="my-4 ml-4 flex flex-col gap-y-2">
+                    <ul className="my-2 ml-2 lg:my-4 lg:ml-4 flex flex-col gap-y-2 overflow-y-auto max-h-[calc(100vh-160px)] ">
                         {selectedRegionCountries.map((item) => (
                             <li
                                 key={item.id}
-                                className="hover:underline cursor-pointer"
+                                className="hover:underline cursor-pointer text-xs lg:text-base"
                                 onClick={() => setSelectedCountry(item)}
                             >
                                 {item.properties.jpNames[0]}
@@ -51,8 +51,8 @@ export default function Dictionary() {
                         ))}
                     </ul>
                 </div>
-                <div className="w-full">
-                    <div className="mb-8">
+                <div className="w-full p-4">
+                    <div className="mb-8 lg:hidden">
                         <div className="flex flex-col justify-center items-center h-full">
                             {selectedCountry && (
                                 <div className="">
@@ -69,7 +69,7 @@ export default function Dictionary() {
                             )}
                         </div>
                     </div>
-                    <div className="border">
+                    <div className="border relative">
                         <GeographyMap
                             selectedCountry={selectedCountry}
                             geographyData={geographyData}
@@ -81,6 +81,23 @@ export default function Dictionary() {
                             mapScale={400}
                             mapCenter={selectedCountry?.properties.coordinates}
                         />
+                        <div className="hidden lg:block absolute top-5 right-5">
+                            <div className="flex flex-col justify-center items-center h-full">
+                                {selectedCountry && (
+                                    <div className="">
+                                        <h2 className="text-xl text-center font-bold mb-4">
+                                            {selectedCountry.properties.jpNames[0]}
+                                        </h2>
+                                        <img
+                                            src={getFlagImageUrl(selectedCountry.id)}
+                                            alt={selectedCountry.id}
+                                            width={256}
+                                            height={192}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,14 +111,14 @@ const RegionSelector: FunctionComponent<{
 }> = ({ selectedRegion, changeRegion }) => {
     return (
         <Listbox value={selectedRegion} onChange={changeRegion}>
-            <ListboxButton className="relative flex justify-between items-center w-52 px-4 rounded-lg bg-white border py-1.5 text-left text-sm/6 focus:outline-none">
+            <ListboxButton className="relative flex justify-between items-center w-28 lg:w-52 px-4 rounded-lg bg-white border py-1.5 text-left text-xs lg:text-base focus:outline-none">
                 {selectedRegion}
                 <FaChevronDown />
             </ListboxButton>
             <ListboxOptions
                 anchor="bottom"
                 transition
-                className="w-52 rounded-xl border border-white/5 bg-white p-1 focus:outline-none"
+                className="rounded-xl border border-white/5 bg-white p-1 focus:outline-none ml-0"
             >
                 {regions.map((region) => (
                     <ListboxOption
