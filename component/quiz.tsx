@@ -4,7 +4,7 @@ import { checkAnswer, pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib
 import { Dispatch, FunctionComponent, RefObject, SetStateAction, useState } from 'react';
 import { MdOutlineTipsAndUpdates, MdShuffle } from 'react-icons/md';
 import { PiEyesFill } from 'react-icons/pi';
-import { Modal } from './common';
+import { Modal, Toast, ToastType } from './common';
 
 export const CurrentStatus: FunctionComponent<{
     answeredCountriesMap: Map<string, Geometry>;
@@ -263,7 +263,7 @@ export const AnswerForm: FunctionComponent<{
             return;
         }
         if (!checkAnswer(userInput, selectedCountry.properties.jpNames)) {
-            alert('不正解です。');
+            setToast({ type: ToastType.Failure, message: '不正解です' });
             setUserInput('');
             inputRef.current?.focus();
             return;
@@ -273,11 +273,28 @@ export const AnswerForm: FunctionComponent<{
         newMap.set(selectedCountry.id, selectedCountry);
         setAnsweredCountriesMap(newMap);
         setUserInput('');
-        alert('正解です！');
+        setToast({
+            type: ToastType.Success,
+            message: (
+                <div className="flex items-center gap-x-1">
+                    正解です！
+                    <br />
+                    <img
+                        src={getFlagImageUrl(selectedCountry.id)}
+                        alt={selectedCountry.id}
+                        width={24}
+                        height={16}
+                    />
+                </div>
+            ),
+        });
         save(newMap);
 
         if (newMap.size === geometries.length) {
-            alert('すべての国を答えました！\nあなたこそ世界の国マスターです！');
+            setToast({
+                type: ToastType.Success,
+                message: 'すべての国を答えました！\nあなたこそ世界の国マスターです！',
+            });
             clearSaveData();
             setAnsweredCountriesMap(new Map());
             return;
@@ -300,15 +317,20 @@ export const AnswerForm: FunctionComponent<{
         return;
     };
 
+    const [toast, setToast] = useState<Toast | null>(null);
+
     return (
-        <form
-            className="mt-4 flex items-center gap-x-2"
-            onSubmit={(e) => {
-                e.preventDefault();
-                answer();
-            }}
-        >
-            {children}
-        </form>
+        <>
+            <Toast toast={toast} setVisible={setToast} />
+            <form
+                className="mt-4 flex items-center gap-x-2"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    answer();
+                }}
+            >
+                {children}
+            </form>
+        </>
     );
 };

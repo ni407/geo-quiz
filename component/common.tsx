@@ -86,3 +86,35 @@ export const Modal: FunctionComponent<{
     }
     return null;
 };
+
+export enum ToastType {
+    Success = 'success',
+    Failure = 'failure',
+}
+export type Toast = { type: ToastType | 'error'; message: React.ReactNode };
+export const Toast: FunctionComponent<{
+    toast: Toast | null;
+    setVisible: Dispatch<SetStateAction<Toast | null>>;
+}> = ({ toast, setVisible }) => {
+    useEffect(() => {
+        if (toast) {
+            const timer = setTimeout(() => {
+                setVisible(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [toast, setVisible]);
+
+    return (
+        toast && (
+            <div
+                className={`fixed top-6 left-1/2 -translate-x-1/2 z-5 w-28 px-6 py-3 rounded-lg shadow-lg text-white text-lg font-bold transition-all
+                        ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'}
+                    `}
+                style={{ minWidth: 200, maxWidth: 320 }}
+            >
+                {toast.message}
+            </div>
+        )
+    );
+};
