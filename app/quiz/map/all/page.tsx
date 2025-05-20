@@ -10,7 +10,7 @@ import {
     ShuffleButton,
 } from '@/component/quiz';
 import { Geometry, geographyData } from '@/lib/geography';
-import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
+import { pickRandomUnAnsweredCountry, useLocalStorage, useWindowSize } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
@@ -57,6 +57,7 @@ export default function Page() {
             setAnsweredCountriesMap(new Map());
         }
     }, []);
+    const { width, contentHeight } = useWindowSize();
 
     return (
         <QuizLayout>
@@ -70,6 +71,8 @@ export default function Page() {
                 setUserInput={setUserInput}
                 mapCenter={startCountry?.properties.coordinates}
                 mapScale={250}
+                width={width}
+                height={contentHeight}
             />
             <Drawer>
                 <CurrentStatus

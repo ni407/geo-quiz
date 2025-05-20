@@ -14,6 +14,7 @@ import {
     getOneRegionGeographyData,
     pickRandomUnAnsweredCountry,
     useLocalStorage,
+    useWindowSize,
 } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
 
@@ -61,6 +62,8 @@ export default function Page() {
         }
     }, []);
 
+    const { width, contentHeight } = useWindowSize();
+
     return (
         <QuizLayout>
             <GeographyMap
@@ -73,6 +76,8 @@ export default function Page() {
                 setUserInput={setUserInput}
                 mapCenter={startCountry?.properties.coordinates}
                 mapScale={200}
+                width={width}
+                height={contentHeight}
             />
             <Drawer>
                 <CurrentStatus

@@ -10,7 +10,7 @@ import {
     ShuffleButton,
 } from '@/component/quiz';
 import { Geometry, geographyData } from '@/lib/geography';
-import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
+import { pickRandomUnAnsweredCountry, useLocalStorage, useWindowSize } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
@@ -56,6 +56,8 @@ export default function Page() {
         selectRandomUnansweredCountry(new Map());
     }, []);
 
+    const { width, contentHeight } = useWindowSize();
+
     const finishAnswering = () => {
         if (confirm('本当に終了しますか？')) {
             setFinishModalVisible(true);
@@ -96,6 +98,8 @@ ${location.origin}
                 setSelectedCountry={setSelectedCountry}
                 setUserInput={setUserInput}
                 mapScale={250}
+                width={width}
+                height={contentHeight}
             />
             <Drawer>
                 <CurrentStatus

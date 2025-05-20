@@ -1,3 +1,4 @@
+import { DrawerHeight } from '@/component/layout';
 import { useLayoutEffect, useState } from 'react';
 import { Geometry, Region, geographyData } from './geography';
 
@@ -28,7 +29,7 @@ export const checkAnswer = (inputStr: string, answers: string[]) => {
     return isMatch;
 };
 
-export const useWindowSize = (): number[] => {
+export const useWindowSize = () => {
     const [size, setSize] = useState([0, 0]);
     useLayoutEffect(() => {
         const updateSize = (): void => {
@@ -40,7 +41,10 @@ export const useWindowSize = (): number[] => {
 
         return () => window.removeEventListener('resize', updateSize);
     }, []);
-    return size;
+
+    const contentHeight = size[1] - DrawerHeight < 0 ? 0 : size[1] - DrawerHeight;
+
+    return { width: size[0], height: size[1], contentHeight };
 };
 
 export const useLocalStorage = (localStorageKey: string) => {

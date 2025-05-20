@@ -1,11 +1,9 @@
 import { getFlagImageUrl } from '@/lib/flag';
 import { GeographyData, Geometry } from '@/lib/geography';
-import { useWindowSize } from '@/lib/util';
 import { Dispatch, FunctionComponent, RefObject, SetStateAction, useMemo } from 'react';
 import { FaFlag } from 'react-icons/fa';
 import {} from 'react-icons/md';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
-import { DrawerHeight } from './layout';
 
 export const GeographyMap: FunctionComponent<{
     selectedCountry: Geometry | null;
@@ -17,6 +15,8 @@ export const GeographyMap: FunctionComponent<{
     setUserInput: Dispatch<SetStateAction<string>>;
     mapScale: number;
     mapCenter?: [number, number];
+    width?: number;
+    height?: number;
 }> = ({
     selectedCountry,
     geographyData,
@@ -27,9 +27,9 @@ export const GeographyMap: FunctionComponent<{
     setUserInput,
     mapScale,
     mapCenter,
+    width,
+    height,
 }) => {
-    const size = useWindowSize();
-
     const getDefaultBgColor = useMemo(
         () => (countryId: string) => {
             if (answeredCountriesMap.has(countryId)) {
@@ -79,8 +79,8 @@ export const GeographyMap: FunctionComponent<{
     return (
         <ComposableMap
             projection="geoEqualEarth"
-            width={size[0]}
-            height={size[1] - DrawerHeight < 0 ? 0 : size[1] - DrawerHeight}
+            width={width}
+            height={height}
             projectionConfig={{
                 scale: mapScale,
                 center: mapCenter,

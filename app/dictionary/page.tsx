@@ -78,14 +78,14 @@ export default function Dictionary() {
                             inputRef={null}
                             setSelectedCountry={setSelectedCountry}
                             setUserInput={() => {}}
-                            mapScale={400}
+                            mapScale={250}
                             mapCenter={selectedCountry?.properties.coordinates}
                         />
-                        <div className="hidden lg:block absolute top-5 right-5">
+                        <div className="hidden lg:block absolute top-5 left-5">
                             <div className="flex flex-col justify-center items-center h-full">
                                 {selectedCountry && (
                                     <div className="">
-                                        <h2 className="text-xl text-center font-bold mb-4">
+                                        <h2 className="text-xl text-center font-bold mb-2">
                                             {selectedCountry.properties.jpNames[0]}
                                         </h2>
                                         <img
