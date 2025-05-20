@@ -34,7 +34,7 @@ export default function Dictionary() {
     }, []);
 
     return (
-        <div className="min-h-screen p-4  bg-gradient-to-br from-blue-50 to-indigo-100 ">
+        <div className="min-h-screen p-4 bg-gradient-to-br from-blue-50 to-indigo-100 ">
             <BackButton />
             <div className="flex items-start justify-start gap-x-2 lg:gap-x-8 my-16">
                 <div className="">

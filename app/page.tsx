@@ -4,7 +4,7 @@ import { FunctionComponent } from 'react';
 
 export default function Home() {
     return (
-        <div className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 lg:px-12 py-6">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-4 lg:px-12 py-6">
             <div className="flex items-center mb-4 gap-x-2">
                 <img src="/logo.png" alt="GeoQuiz Logo" className="size-20 mb-4 drop-shadow-lg" />
                 <h1 className="text-5xl font-extrabold text-indigo-700 tracking-tight my-2">
