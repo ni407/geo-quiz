@@ -1,14 +1,14 @@
 'use client';
 import { Drawer, QuizLayout } from '@/component/layout';
-import { GeographyMap } from '@/component/map';
 import {
     AnswerForm,
     AnswerInput,
     CheetButton,
     CurrentStatus,
-    FlagHintButton,
+    InitialHintButton,
     ShuffleButton,
 } from '@/component/quiz';
+import { getFlagImageUrl } from '@/lib/flag';
 import { Geometry } from '@/lib/geography';
 import {
     getOneRegionGeographyData,
@@ -18,9 +18,9 @@ import {
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
-    const geographyData = getOneRegionGeographyData('アジア');
-    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'JPN'); // 日本
-    const localStorageKey = 'asia-answeredCountriesMap';
+    const geographyData = getOneRegionGeographyData('オセアニア');
+    const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'AUS');
+    const localStorageKey = 'flag-oceania-answeredCountriesMap';
     const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
     const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
@@ -30,13 +30,6 @@ export default function Page() {
 
     const [userInput, setUserInput] = useState<string>('');
     const ref = useRef<HTMLInputElement>(null);
-
-    const defaultZoomRate = 2;
-    const [zoomRate, setZoomRate] = useState<number>(1);
-    //初期値からdefaultZoomRateを適用すると、地図の中心がズレる前の位置で拡大されてしまうため。
-    useEffect(() => {
-        setZoomRate(defaultZoomRate);
-    }, []);
 
     const selectRandomUnansweredCountry = (countriesMap: Map<string, Geometry>) => {
         const randomCountry = pickRandomUnAnsweredCountry(
@@ -63,17 +56,16 @@ export default function Page() {
 
     return (
         <QuizLayout>
-            <GeographyMap
-                selectedCountry={selectedCountry}
-                geographyData={geographyData}
-                answeredCountriesMap={answeredCountriesMap}
-                zoomRate={zoomRate}
-                inputRef={ref}
-                setSelectedCountry={setSelectedCountry}
-                setUserInput={setUserInput}
-                mapCenter={startCountry?.properties.coordinates}
-                mapScale={200}
-            />
+            <div className="flex flex-col items-center justify-center my-auto h-full">
+                {selectedCountry && (
+                    <img
+                        src={getFlagImageUrl(selectedCountry?.id)}
+                        alt="国旗"
+                        className="size-auto lg:size-96 my-auto"
+                    />
+                )}
+            </div>
+
             <Drawer>
                 <CurrentStatus
                     answeredCountriesMap={answeredCountriesMap}
@@ -88,8 +80,6 @@ export default function Page() {
                     setAnsweredCountriesMap={setAnsweredCountriesMap}
                     localStorageKey={localStorageKey}
                     setSelectedCountry={setSelectedCountry}
-                    setZoomRate={setZoomRate}
-                    defaultZoomRate={defaultZoomRate}
                     geometries={geographyData.objects.world.geometries}
                 >
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
@@ -103,7 +93,7 @@ export default function Page() {
                             selectRandomUnansweredCountry(nextCountryExceptions);
                         }}
                     />
-                    <FlagHintButton selectedCountry={selectedCountry} />
+                    <InitialHintButton selectedCountry={selectedCountry} />
                     <CheetButton selectedCountry={selectedCountry} inputRef={ref} />
                 </AnswerForm>
             </Drawer>

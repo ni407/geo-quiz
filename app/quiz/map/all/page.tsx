@@ -1,14 +1,14 @@
 'use client';
-import { MapDrawer, MapLayoout } from '@/component/layout';
+import { Drawer, QuizLayout } from '@/component/layout';
+import { GeographyMap } from '@/component/map';
 import {
     AnswerForm,
     AnswerInput,
     CheetButton,
     CurrentStatus,
-    GeographyMap,
-    HintButton,
+    FlagHintButton,
     ShuffleButton,
-} from '@/component/map';
+} from '@/component/quiz';
 import { Geometry, geographyData } from '@/lib/geography';
 import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
@@ -42,11 +42,11 @@ export default function Page() {
         ref.current?.focus();
     };
 
-    const LocalStorageKey = 'all-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(LocalStorageKey);
+    const localStorageKey = 'all-answeredCountriesMap';
+    const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
     useEffect(() => {
-        if (localStorage.getItem(LocalStorageKey)) {
+        if (localStorage.getItem(localStorageKey)) {
             if (confirm('前回の途中から再開しますか？')) {
                 const savedAnswerMap = load();
                 setAnsweredCountriesMap(savedAnswerMap);
@@ -59,7 +59,7 @@ export default function Page() {
     }, []);
 
     return (
-        <MapLayoout>
+        <QuizLayout>
             <GeographyMap
                 selectedCountry={selectedCountry}
                 geographyData={geographyData}
@@ -71,7 +71,7 @@ export default function Page() {
                 mapCenter={startCountry?.properties.coordinates}
                 mapScale={250}
             />
-            <MapDrawer>
+            <Drawer>
                 <CurrentStatus
                     answeredCountriesMap={answeredCountriesMap}
                     geometries={geographyData.objects.world.geometries}
@@ -83,11 +83,12 @@ export default function Page() {
                     inputRef={ref}
                     answeredCountriesMap={answeredCountriesMap}
                     setAnsweredCountriesMap={setAnsweredCountriesMap}
-                    localStorageKey={LocalStorageKey}
+                    localStorageKey={localStorageKey}
                     setSelectedCountry={setSelectedCountry}
                     setZoomRate={setZoomRate}
                     defaultZoomRate={defaultZoomRate}
                     geometries={geographyData.objects.world.geometries}
+                    prioritizeSameRegion
                 >
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
                     <ShuffleButton
@@ -100,10 +101,10 @@ export default function Page() {
                             selectRandomUnansweredCountry(nextCountryExceptions);
                         }}
                     />
-                    <HintButton selectedCountry={selectedCountry} />
+                    <FlagHintButton selectedCountry={selectedCountry} />
                     <CheetButton selectedCountry={selectedCountry} inputRef={ref} />
                 </AnswerForm>
-            </MapDrawer>
-        </MapLayoout>
+            </Drawer>
+        </QuizLayout>
     );
 }

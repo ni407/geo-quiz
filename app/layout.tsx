@@ -13,8 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: '国名マスター（仮）',
+    title: 'GeoQuiz',
     description: '世界の国を覚えるためのゲームです。',
+    icons: {
+        icon: '/logo.png',
+        shortcut: '/logo.png',
+    },
 };
 
 export default function RootLayout({
@@ -24,7 +28,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="ja">
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
                 <div id="root">{children}</div>
             </body>
         </html>

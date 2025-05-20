@@ -3,18 +3,21 @@ import { FunctionComponent } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
 
 export const DrawerHeight = 140;
-export const MapLayoout: FunctionComponent<{
+export const QuizLayout: FunctionComponent<{
     children: React.ReactNode;
 }> = ({ children }) => {
     return (
-        <div className={`overflow-hidden w-screen  h-[calc(100vh-${DrawerHeight}px)]`}>
+        <div
+            className={'overflow-hidden w-screen'}
+            style={{ height: `calc(100vh - ${DrawerHeight}px)` }}
+        >
             {children}
             <BackButton />
         </div>
     );
 };
 
-export const MapDrawer: FunctionComponent<{
+export const Drawer: FunctionComponent<{
     children: React.ReactNode;
 }> = ({ children }) => {
     return (

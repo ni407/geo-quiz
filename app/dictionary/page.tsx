@@ -34,7 +34,7 @@ export default function Dictionary() {
     }, []);
 
     return (
-        <div className="min-h-screen p-4 bg-gray-100">
+        <div className="min-h-screen p-4  bg-gradient-to-br from-blue-50 to-indigo-100 ">
             <BackButton />
             <div className="flex items-start justify-start gap-x-2 lg:gap-x-8 my-16">
                 <div className="">
@@ -69,7 +69,7 @@ export default function Dictionary() {
                             )}
                         </div>
                     </div>
-                    <div className="border relative">
+                    <div className="relative bg-white shadow">
                         <GeographyMap
                             selectedCountry={selectedCountry}
                             geographyData={geographyData}
@@ -118,7 +118,7 @@ const RegionSelector: FunctionComponent<{
             <ListboxOptions
                 anchor="bottom"
                 transition
-                className="rounded-xl border border-white/5 bg-white p-1 focus:outline-none ml-0"
+                className="rounded-xl border border-white/5 bg-white p-1 focus:outline-none ml-0  w-28 lg:w-52 "
             >
                 {regions.map((region) => (
                     <ListboxOption

@@ -1,7 +1,6 @@
 'use client';
 import { Modal } from '@/component/common';
 import { Drawer, QuizLayout } from '@/component/layout';
-import { GeographyMap } from '@/component/map';
 import {
     AnswerForm,
     AnswerInput,
@@ -9,6 +8,7 @@ import {
     FinishButton,
     ShuffleButton,
 } from '@/component/quiz';
+import { getFlagImageUrl } from '@/lib/flag';
 import { Geometry, geographyData } from '@/lib/geography';
 import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
@@ -18,17 +18,8 @@ export default function Page() {
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<Map<string, Geometry>>(
         new Map(),
     );
-    const localStorageKey = 'exam-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
     const [userInput, setUserInput] = useState<string>('');
-    const defaultZoomRate = 1.5;
-    const [zoomRate, setZoomRate] = useState<number>(1);
-    //初期値からdefaultZoomRateを適用すると、地図の中心がズレる前の位置で拡大されてしまうため。
-    useEffect(() => {
-        setZoomRate(defaultZoomRate);
-    }, []);
-
     const ref = useRef<HTMLInputElement>(null);
 
     const selectRandomUnansweredCountry = (countriesMap: Map<string, Geometry>) => {
@@ -38,9 +29,11 @@ export default function Page() {
         );
         if (!randomCountry) return;
         setSelectedCountry(randomCountry);
-        setZoomRate(defaultZoomRate);
         ref.current?.focus();
     };
+
+    const localStorageKey = 'flag-all-answeredCountriesMap';
+    const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
     useEffect(() => {
         if (localStorage.getItem(localStorageKey)) {
@@ -67,6 +60,7 @@ export default function Page() {
         setSelectedCountry(null);
         setUserInput('');
         localStorage.removeItem(localStorageKey);
+        selectRandomUnansweredCountry(new Map());
     };
 
     const copyToClipboard = async () => {
@@ -87,16 +81,16 @@ ${location.origin}
 
     return (
         <QuizLayout>
-            <GeographyMap
-                selectedCountry={selectedCountry}
-                geographyData={geographyData}
-                answeredCountriesMap={answeredCountriesMap}
-                zoomRate={zoomRate}
-                inputRef={ref}
-                setSelectedCountry={setSelectedCountry}
-                setUserInput={setUserInput}
-                mapScale={250}
-            />
+            <div className="flex flex-col items-center justify-center my-auto h-full">
+                {selectedCountry && (
+                    <img
+                        src={getFlagImageUrl(selectedCountry?.id)}
+                        alt="国旗"
+                        className="size-auto lg:size-96 my-auto"
+                    />
+                )}
+            </div>
+
             <Drawer>
                 <CurrentStatus
                     answeredCountriesMap={answeredCountriesMap}
@@ -111,8 +105,6 @@ ${location.origin}
                     setAnsweredCountriesMap={setAnsweredCountriesMap}
                     localStorageKey={localStorageKey}
                     setSelectedCountry={setSelectedCountry}
-                    setZoomRate={setZoomRate}
-                    defaultZoomRate={defaultZoomRate}
                     geometries={geographyData.objects.world.geometries}
                 >
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />

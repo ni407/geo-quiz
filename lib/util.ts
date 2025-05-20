@@ -43,13 +43,13 @@ export const useWindowSize = (): number[] => {
     return size;
 };
 
-export const useLocalStorage = (LocalStorageKey: string) => {
+export const useLocalStorage = (localStorageKey: string) => {
     const save = (countriesMap: Map<string, Geometry>) => {
         const answeredCountriesMapString = JSON.stringify(Array.from(countriesMap));
-        localStorage.setItem(LocalStorageKey, answeredCountriesMapString);
+        localStorage.setItem(localStorageKey, answeredCountriesMapString);
     };
     const load = (): Map<string, Geometry> => {
-        const answeredCountriesMapString = localStorage.getItem(LocalStorageKey);
+        const answeredCountriesMapString = localStorage.getItem(localStorageKey);
         if (answeredCountriesMapString) {
             const answeredCountriesMapArray = JSON.parse(answeredCountriesMapString);
             const answeredCountriesMap = new Map(answeredCountriesMapArray);
@@ -58,7 +58,7 @@ export const useLocalStorage = (LocalStorageKey: string) => {
         return new Map();
     };
     const clearSaveData = () => {
-        localStorage.removeItem(LocalStorageKey);
+        localStorage.removeItem(localStorageKey);
     };
 
     return { save, load, clearSaveData };
@@ -68,12 +68,13 @@ export const pickRandomUnAnsweredCountry = (
     geometries: Geometry[],
     answeredCountriesMap: Map<string, Geometry>,
     prevCountry?: Geometry,
+    prioritizeSameRegion = false,
 ) => {
     const unansweredCountries = geometries.filter((geo) => !answeredCountriesMap.has(geo.id));
     if (unansweredCountries.length === 0) return;
 
     let targetCountries = unansweredCountries;
-    if (prevCountry) {
+    if (prevCountry && prioritizeSameRegion) {
         const sameRegionCountries = unansweredCountries.filter(
             (geo) => geo.properties.region === prevCountry.properties.region,
         );
