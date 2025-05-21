@@ -1,3 +1,4 @@
+import { useWindowSize } from '@/lib/util';
 import Link from 'next/link';
 import { FunctionComponent } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -20,10 +21,12 @@ export const QuizLayout: FunctionComponent<{
 export const Drawer: FunctionComponent<{
     children: React.ReactNode;
 }> = ({ children }) => {
+    const { keyboardHeight } = useWindowSize();
+
     return (
         <div
             className="fixed bottom-0 left-0 w-full rounded bg-amber-100 p-4"
-            style={{ height: DrawerHeight }}
+            style={{ height: DrawerHeight, transform: `translateY(-${keyboardHeight}px)` }}
         >
             {children}
         </div>

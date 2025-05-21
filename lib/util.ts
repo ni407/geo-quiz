@@ -61,10 +61,8 @@ export const useWindowSize = () => {
             setVisualViewportHeight(window.visualViewport.height);
         };
 
-        // visualViewport の resize イベントを購読
         window.visualViewport.addEventListener('resize', handleResize);
 
-        // クリーンアップ関数
         return () => {
             if (!window.visualViewport) return;
             window.visualViewport.removeEventListener('resize', handleResize);
@@ -73,8 +71,9 @@ export const useWindowSize = () => {
 
     const viewHeight = visualViewportHeight ? visualViewportHeight : size[1];
     const contentHeight = viewHeight - DrawerHeight < 0 ? 0 : viewHeight - DrawerHeight;
+    const keyboardHeight = size[1] - viewHeight;
 
-    return { width: size[0], height: size[1], contentHeight };
+    return { width: size[0], height: size[1], contentHeight, keyboardHeight };
 };
 
 export const useLocalStorage = (localStorageKey: string) => {
