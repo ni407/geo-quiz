@@ -1,20 +1,35 @@
 import { useWindowSize } from '@/lib/util';
 import Link from 'next/link';
-import { FunctionComponent } from 'react';
+import { Dispatch, FunctionComponent, SetStateAction, createContext, useState } from 'react';
 import { IoIosArrowBack } from 'react-icons/io';
+import { Toast } from './common';
 
 export const DrawerHeight = 140;
+
+type ToastContextType = {
+    toast: Toast | null;
+    setToast: Dispatch<SetStateAction<Toast | null>>;
+};
+
+export const ToastContext = createContext<ToastContextType>({
+    toast: null,
+    setToast: () => null,
+});
 export const QuizLayout: FunctionComponent<{
     children: React.ReactNode;
 }> = ({ children }) => {
+    const [toast, setToast] = useState<Toast | null>(null);
     return (
-        <div
-            className={'overflow-hidden w-screen'}
-            style={{ height: `calc(100vh - ${DrawerHeight}px)` }}
-        >
-            {children}
-            <BackButton />
-        </div>
+        <ToastContext.Provider value={{ toast, setToast }}>
+            <div
+                className={'overflow-hidden w-screen'}
+                style={{ height: `calc(100vh - ${DrawerHeight}px)` }}
+            >
+                {children}
+                <BackButton />
+                <Toast toast={toast} setVisible={setToast} />
+            </div>
+        </ToastContext.Provider>
     );
 };
 

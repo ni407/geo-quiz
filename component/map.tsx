@@ -2,7 +2,6 @@ import { getFlagImageUrl } from '@/lib/flag';
 import { GeographyData, Geometry } from '@/lib/geography';
 import { Dispatch, FunctionComponent, RefObject, SetStateAction, useMemo } from 'react';
 import { FaFlag } from 'react-icons/fa';
-import {} from 'react-icons/md';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
 
 export const GeographyMap: FunctionComponent<{

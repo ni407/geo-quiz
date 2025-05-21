@@ -1,11 +1,11 @@
 'use client';
-import { Modal } from '@/component/common';
 import { Drawer, QuizLayout } from '@/component/layout';
 import {
     AnswerForm,
     AnswerInput,
     CurrentStatus,
     FinishButton,
+    FinishModal,
     ShuffleButton,
 } from '@/component/quiz';
 import { getFlagImageUrl } from '@/lib/flag';
@@ -106,6 +106,7 @@ ${location.origin}
                     localStorageKey={localStorageKey}
                     setSelectedCountry={setSelectedCountry}
                     geometries={geographyData.objects.world.geometries}
+                    setFinishModalVisible={setFinishModalVisible}
                 >
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
                     <ShuffleButton
@@ -121,33 +122,14 @@ ${location.origin}
                     <FinishButton onClick={finishAnswering} />
                 </AnswerForm>
             </Drawer>
-            <Modal
-                visible={finishModalVisible}
-                setVisible={setFinishModalVisible}
+            <FinishModal
+                finishModalVisible={finishModalVisible}
+                setFinishModalVisible={setFinishModalVisible}
+                geographyData={geographyData}
+                answeredCountriesMap={answeredCountriesMap}
                 onClose={onClose}
-                title={''}
-                footer={null}
-            >
-                <div className="flex flex-col items-center justify-center h-full">
-                    <h2 className="text-xl font-bold mb-4">
-                        あなたのスコアは
-                        <span className="text-3xl font-extrabold mx-4">
-                            {answeredCountriesMap.size}点
-                        </span>
-                        ({geographyData.objects.world.geometries.length}点中） です！
-                    </h2>
-                    <p className="text-lg mb-4">またの挑戦をお待ちしています！</p>
-                    <div className="mt-4">
-                        <button
-                            type="button"
-                            className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
-                            onClick={copyToClipboard}
-                        >
-                            スコアをコピぺしてシェア
-                        </button>
-                    </div>
-                </div>
-            </Modal>
+                copyToClipboard={copyToClipboard}
+            />
         </QuizLayout>
     );
 }

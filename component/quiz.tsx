@@ -1,10 +1,18 @@
 import { getFlagImageUrl } from '@/lib/flag';
-import { Geometry } from '@/lib/geography';
+import { GeographyData, Geometry } from '@/lib/geography';
 import { checkAnswer, pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
-import { Dispatch, FunctionComponent, RefObject, SetStateAction, useState } from 'react';
+import {
+    Dispatch,
+    FunctionComponent,
+    RefObject,
+    SetStateAction,
+    useContext,
+    useState,
+} from 'react';
 import { MdOutlineTipsAndUpdates, MdShuffle } from 'react-icons/md';
 import { PiEyesFill } from 'react-icons/pi';
-import { Modal, Toast, ToastType } from './common';
+import { Modal, ToastType } from './common';
+import { ToastContext } from './layout';
 
 export const CurrentStatus: FunctionComponent<{
     answeredCountriesMap: Map<string, Geometry>;
@@ -240,6 +248,7 @@ export const AnswerForm: FunctionComponent<{
     defaultZoomRate?: number;
     geometries: Geometry[];
     prioritizeSameRegion?: boolean;
+    setFinishModalVisible?: Dispatch<SetStateAction<boolean>>;
 }> = ({
     children,
     selectedCountry,
@@ -254,8 +263,10 @@ export const AnswerForm: FunctionComponent<{
     defaultZoomRate,
     geometries,
     prioritizeSameRegion = false,
+    setFinishModalVisible,
 }) => {
     const { save, clearSaveData } = useLocalStorage(localStorageKey);
+    const { setToast } = useContext(ToastContext);
 
     const answer = () => {
         if (selectedCountry === null) {
@@ -291,12 +302,17 @@ export const AnswerForm: FunctionComponent<{
         save(newMap);
 
         if (newMap.size === geometries.length) {
-            setToast({
-                type: ToastType.Success,
-                message: 'すべての国を答えました！\nあなたこそ世界の国マスターです！',
-            });
-            clearSaveData();
-            setAnsweredCountriesMap(new Map());
+            if (setFinishModalVisible) {
+                setFinishModalVisible(true);
+            } else {
+                setToast({
+                    type: ToastType.Success,
+                    message: 'すべての国に回答しました！',
+                });
+                clearSaveData();
+                setAnsweredCountriesMap(new Map());
+                setSelectedCountry(null);
+            }
             return;
         }
 
@@ -317,20 +333,61 @@ export const AnswerForm: FunctionComponent<{
         return;
     };
 
-    const [toast, setToast] = useState<Toast | null>(null);
-
     return (
-        <>
-            <Toast toast={toast} setVisible={setToast} />
-            <form
-                className="mt-4 flex items-center gap-x-2"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    answer();
-                }}
-            >
-                {children}
-            </form>
-        </>
+        <form
+            className="mt-4 flex items-center gap-x-2"
+            onSubmit={(e) => {
+                e.preventDefault();
+                answer();
+            }}
+        >
+            {children}
+        </form>
+    );
+};
+
+export const FinishModal: FunctionComponent<{
+    finishModalVisible: boolean;
+    setFinishModalVisible: Dispatch<SetStateAction<boolean>>;
+    geographyData: GeographyData;
+    answeredCountriesMap: Map<string, Geometry>;
+    onClose: () => void;
+    copyToClipboard: () => void;
+}> = ({
+    finishModalVisible,
+    setFinishModalVisible,
+    geographyData,
+    answeredCountriesMap,
+    onClose,
+    copyToClipboard,
+}) => {
+    return (
+        <Modal
+            visible={finishModalVisible}
+            setVisible={setFinishModalVisible}
+            onClose={onClose}
+            title={''}
+            footer={null}
+        >
+            <div className="flex flex-col items-center justify-center h-full">
+                <h2 className="text-xl font-bold mb-4">
+                    あなたのスコアは
+                    <span className="text-3xl font-extrabold mx-4">
+                        {answeredCountriesMap.size}点
+                    </span>
+                    ({geographyData.objects.world.geometries.length}点中） です！
+                </h2>
+                <p className="text-lg mb-4">またの挑戦をお待ちしています！</p>
+                <div className="mt-4">
+                    <button
+                        type="button"
+                        className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
+                        onClick={copyToClipboard}
+                    >
+                        スコアをコピぺしてシェア
+                    </button>
+                </div>
+            </div>
+        </Modal>
     );
 };
