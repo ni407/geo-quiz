@@ -1,5 +1,5 @@
 import { DrawerHeight } from '@/component/layout';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Geometry, Region, geographyData } from './geography';
 
 export const isJapaneseMatch = (inputStr: string, answer: string) => {
@@ -42,7 +42,37 @@ export const useWindowSize = () => {
         return () => window.removeEventListener('resize', updateSize);
     }, []);
 
-    const contentHeight = size[1] - DrawerHeight < 0 ? 0 : size[1] - DrawerHeight;
+    const [visualViewportHeight, setVisualViewportHeight] = useState(() => {
+        // 初期値として現在の visualViewport.height を設定
+        if (typeof window !== 'undefined' && window.visualViewport) {
+            return size[1];
+        }
+        return undefined;
+    });
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || !window.visualViewport) {
+            // SSRやvisualViewportがサポートされていない環境では何もしない
+            return;
+        }
+
+        const handleResize = () => {
+            if (!window.visualViewport) return;
+            setVisualViewportHeight(window.visualViewport.height);
+        };
+
+        // visualViewport の resize イベントを購読
+        window.visualViewport.addEventListener('resize', handleResize);
+
+        // クリーンアップ関数
+        return () => {
+            if (!window.visualViewport) return;
+            window.visualViewport.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    const viewHeight = visualViewportHeight ? visualViewportHeight : size[1];
+    const contentHeight = viewHeight - DrawerHeight < 0 ? 0 : viewHeight - DrawerHeight;
 
     return { width: size[0], height: size[1], contentHeight };
 };

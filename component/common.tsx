@@ -108,7 +108,7 @@ export const Toast: FunctionComponent<{
     return (
         toast && (
             <div
-                className={`fixed top-6 left-1/2 -translate-x-1/2 z-5 w-28 px-6 py-3 rounded-lg shadow-lg text-white text-lg font-bold transition-all
+                className={`fixed top-1/2 lg:top-6 -translate-y-1/2 lg:translate-y-0 left-1/2 -translate-x-1/2 z-5 w-28 px-6 py-3 rounded-lg shadow-lg text-white text-lg font-bold transition-all
                         ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'}
                     `}
                 style={{ minWidth: 200, maxWidth: 320 }}
