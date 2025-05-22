@@ -43,7 +43,6 @@ export const useWindowSize = () => {
     }, []);
 
     const [visualViewportHeight, setVisualViewportHeight] = useState(() => {
-        // 初期値として現在の visualViewport.height を設定
         if (typeof window !== 'undefined' && window.visualViewport) {
             return size[1];
         }
