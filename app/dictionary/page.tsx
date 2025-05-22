@@ -119,17 +119,13 @@ export default function Dictionary() {
     );
 }
 
-export const RegionSelectorHeight = 32;
 const RegionSelector: FunctionComponent<{
     selectedRegion: Region;
     changeRegion: (region: Region) => void;
 }> = ({ selectedRegion, changeRegion }) => {
     return (
         <Listbox value={selectedRegion} onChange={changeRegion}>
-            <ListboxButton
-                className="relative flex justify-between items-center w-28 lg:w-52 px-4 rounded-lg bg-white border text-left text-xs lg:text-base focus:outline-none"
-                style={{ height: RegionSelectorHeight }}
-            >
+            <ListboxButton className="relative flex justify-between items-center w-28 lg:w-52 px-4 py-1.5 rounded-lg bg-white border text-left text-xs lg:text-base focus:outline-none">
                 {selectedRegion}
                 <FaChevronDown />
             </ListboxButton>
