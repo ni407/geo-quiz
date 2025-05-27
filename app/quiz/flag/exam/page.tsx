@@ -1,4 +1,5 @@
 'use client';
+import { FlagDisplay } from '@/component/flag';
 import { Drawer, QuizLayout } from '@/component/layout';
 import {
     AnswerForm,
@@ -8,7 +9,6 @@ import {
     FinishModal,
     ShuffleButton,
 } from '@/component/quiz';
-import { getFlagImageUrl } from '@/lib/flag';
 import { Geometry, geographyData } from '@/lib/geography';
 import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
@@ -81,15 +81,7 @@ ${location.origin}
 
     return (
         <QuizLayout>
-            <div className="flex flex-col items-center justify-center my-auto h-full">
-                {selectedCountry && (
-                    <img
-                        src={getFlagImageUrl(selectedCountry?.id)}
-                        alt="国旗"
-                        className="size-auto lg:size-96 my-auto"
-                    />
-                )}
-            </div>
+            <FlagDisplay selectedCountry={selectedCountry} />
 
             <Drawer>
                 <CurrentStatus

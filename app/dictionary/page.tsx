@@ -47,9 +47,9 @@ export default function Dictionary() {
                     paddingBottom: `${headerHeight}px`,
                 }}
             >
-                <div className="pt-4" style={{ height: contentHeight }}>
+                <div className="pt-4">
                     <RegionSelector selectedRegion={selectedRegion} changeRegion={changeRegion} />
-                    <ul className="p-2 lg:p-4 flex flex-col gap-y-2 overflow-y-auto h-full bg-white">
+                    <ul className="p-2 lg:p-4 flex flex-col gap-y-2 overflow-y-auto h-[500px] lg:h-[600px] bg-white">
                         {selectedRegionCountries.map((item) => (
                             <li
                                 key={item.id}
