@@ -1,3 +1,4 @@
+import { AnsweredCountriesMap } from '@/app/quiz/map/exam/page';
 import { getFlagImageUrl } from '@/lib/flag';
 import { GeographyData, Geometry } from '@/lib/geography';
 import { checkAnswer, pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
@@ -11,16 +12,27 @@ import {
 } from 'react';
 import { MdOutlineTipsAndUpdates, MdShuffle } from 'react-icons/md';
 import { PiEyesFill } from 'react-icons/pi';
+import { VscTriangleRight } from 'react-icons/vsc';
 import { Modal, ToastType } from './common';
 import { ToastContext } from './layout';
 
 export const CurrentStatus: FunctionComponent<{
-    answeredCountriesMap: Map<string, Geometry>;
+    answeredCountriesMap: AnsweredCountriesMap;
     geometries: Geometry[];
 }> = ({ answeredCountriesMap, geometries }) => {
+    const passedCountriesNum = [...answeredCountriesMap.values()].filter(
+        (country) => country.passed,
+    ).length;
     return (
-        <p className="text-xl font-bold">
+        <p className="text-lg font-bold">
             現在の回答状況：{answeredCountriesMap.size}/{geometries.length}カ国
+            {passedCountriesNum > 0 && (
+                <span className="text-sm">
+                    （
+                    {[...answeredCountriesMap.values()].filter((country) => country.passed).length}
+                    カ国パス）
+                </span>
+            )}
         </p>
     );
 };
@@ -70,6 +82,27 @@ export const ShuffleButton: FunctionComponent<{
         >
             <MdShuffle className="size-6" />
             <span className="hidden lg:block">シャッフル</span>
+        </button>
+    );
+};
+
+export const PassButton: FunctionComponent<{
+    onClick: () => void;
+}> = ({ onClick }) => {
+    const pass = () => {
+        if (confirm('この国をパスしても良いですか？')) {
+            onClick();
+        }
+    };
+
+    return (
+        <button
+            type="button"
+            className=" bg-green-500 text-white test-xs lg:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300 flex items-center justify-center gap-x-1"
+            onClick={pass}
+        >
+            <VscTriangleRight className="size-6" />
+            <span className="hidden lg:block">パス</span>
         </button>
     );
 };
@@ -240,8 +273,8 @@ export const AnswerForm: FunctionComponent<{
     userInput: string;
     setUserInput: Dispatch<SetStateAction<string>>;
     inputRef: RefObject<HTMLInputElement | null>;
-    answeredCountriesMap: Map<string, Geometry>;
-    setAnsweredCountriesMap: Dispatch<SetStateAction<Map<string, Geometry>>>;
+    answeredCountriesMap: AnsweredCountriesMap;
+    setAnsweredCountriesMap: Dispatch<SetStateAction<AnsweredCountriesMap>>;
     localStorageKey: string;
     setSelectedCountry: Dispatch<SetStateAction<Geometry | null>>;
     setZoomRate?: Dispatch<SetStateAction<number>>;
@@ -281,7 +314,7 @@ export const AnswerForm: FunctionComponent<{
         }
 
         const newMap = new Map(answeredCountriesMap);
-        newMap.set(selectedCountry.id, selectedCountry);
+        newMap.set(selectedCountry.id, { ...selectedCountry, passed: false });
         setAnsweredCountriesMap(newMap);
         setUserInput('');
         setToast({
@@ -350,14 +383,14 @@ export const FinishModal: FunctionComponent<{
     finishModalVisible: boolean;
     setFinishModalVisible: Dispatch<SetStateAction<boolean>>;
     geographyData: GeographyData;
-    answeredCountriesMap: Map<string, Geometry>;
+    score: number;
     onClose: () => void;
     copyToClipboard: () => void;
 }> = ({
     finishModalVisible,
     setFinishModalVisible,
     geographyData,
-    answeredCountriesMap,
+    score,
     onClose,
     copyToClipboard,
 }) => {
@@ -372,10 +405,8 @@ export const FinishModal: FunctionComponent<{
             <div className="flex flex-col items-center justify-center h-full">
                 <h2 className="text-xl font-bold mb-4">
                     あなたのスコアは
-                    <span className="text-3xl font-extrabold mx-4">
-                        {answeredCountriesMap.size}点
-                    </span>
-                    ({geographyData.objects.world.geometries.length}点中） です！
+                    <span className="text-3xl font-extrabold mx-4">{score}点</span>(
+                    {geographyData.objects.world.geometries.length}点中） です！
                 </h2>
                 <p className="text-lg mb-4">またの挑戦をお待ちしています！</p>
                 <div className="mt-4">

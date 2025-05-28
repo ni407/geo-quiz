@@ -7,15 +7,16 @@ import {
     CurrentStatus,
     FinishButton,
     FinishModal,
-    ShuffleButton,
+    PassButton,
 } from '@/component/quiz';
 import { Geometry, geographyData } from '@/lib/geography';
 import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
+import { AnsweredCountriesMap } from '../../map/exam/page';
 
 export default function Page() {
     const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(null);
-    const [answeredCountriesMap, setAnsweredCountriesMap] = useState<Map<string, Geometry>>(
+    const [answeredCountriesMap, setAnsweredCountriesMap] = useState<AnsweredCountriesMap>(
         new Map(),
     );
 
@@ -49,11 +50,6 @@ export default function Page() {
         selectRandomUnansweredCountry(new Map());
     }, []);
 
-    const finishAnswering = () => {
-        if (confirm('本当に終了しますか？')) {
-            setFinishModalVisible(true);
-        }
-    };
     const [finishModalVisible, setFinishModalVisible] = useState(false);
     const onClose = () => {
         setAnsweredCountriesMap(new Map());
@@ -63,10 +59,12 @@ export default function Page() {
         selectRandomUnansweredCountry(new Map());
     };
 
+    const score = [...answeredCountriesMap.values()].filter((country) => !country.passed).length;
+
     const copyToClipboard = async () => {
-        const text = `GeoQuizの地図検定に挑戦しました！\n
+        const text = `GeoQuizの国旗検定に挑戦しました！\n
 わたしのスコアは
-${answeredCountriesMap.size}点(${geographyData.objects.world.geometries.length}点中） \nでした！\n
+${score}点(${geographyData.objects.world.geometries.length}点中） \nでした！\n
 みんなも挑戦してみてね！
 ${location.origin}
 `;
@@ -77,6 +75,30 @@ ${location.origin}
         } catch (err) {
             alert('コピーに失敗しました。');
         }
+    };
+
+    const { save } = useLocalStorage(localStorageKey);
+    const geometries = geographyData.objects.world.geometries;
+    const pass = () => {
+        if (selectedCountry === null) {
+            alert('国を選択してください。');
+            return;
+        }
+        const newMap = new Map(answeredCountriesMap);
+        newMap.set(selectedCountry.id, { ...selectedCountry, passed: true });
+        setAnsweredCountriesMap(newMap);
+        save(newMap);
+        if (newMap.size === geometries.length) {
+            setFinishModalVisible(true);
+            return;
+        }
+
+        const nextCountry = pickRandomUnAnsweredCountry(geometries, newMap, selectedCountry);
+        if (!nextCountry) return;
+
+        setSelectedCountry(nextCountry);
+
+        ref.current?.focus();
     };
 
     return (
@@ -101,24 +123,19 @@ ${location.origin}
                     setFinishModalVisible={setFinishModalVisible}
                 >
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
-                    <ShuffleButton
+                    <PassButton onClick={pass} />
+                    <FinishButton
                         onClick={() => {
-                            const nextCountryExceptions = new Map(answeredCountriesMap);
-                            if (selectedCountry) {
-                                nextCountryExceptions.set(selectedCountry?.id, selectedCountry);
-                            }
-
-                            selectRandomUnansweredCountry(nextCountryExceptions);
+                            setFinishModalVisible(true);
                         }}
                     />
-                    <FinishButton onClick={finishAnswering} />
                 </AnswerForm>
             </Drawer>
             <FinishModal
                 finishModalVisible={finishModalVisible}
                 setFinishModalVisible={setFinishModalVisible}
                 geographyData={geographyData}
-                answeredCountriesMap={answeredCountriesMap}
+                score={score}
                 onClose={onClose}
                 copyToClipboard={copyToClipboard}
             />

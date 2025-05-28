@@ -1,3 +1,4 @@
+import { AnsweredCountriesMap } from '@/app/quiz/map/exam/page';
 import { getFlagImageUrl } from '@/lib/flag';
 import { GeographyData, Geometry } from '@/lib/geography';
 import { Dispatch, FunctionComponent, RefObject, SetStateAction, useMemo } from 'react';
@@ -7,7 +8,7 @@ import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 're
 export const GeographyMap: FunctionComponent<{
     selectedCountry: Geometry | null;
     geographyData: GeographyData;
-    answeredCountriesMap: Map<string, Geometry>;
+    answeredCountriesMap: AnsweredCountriesMap;
     zoomRate: number;
     inputRef: RefObject<HTMLInputElement | null> | null;
     setSelectedCountry: Dispatch<SetStateAction<Geometry | null>>;
@@ -31,7 +32,11 @@ export const GeographyMap: FunctionComponent<{
 }) => {
     const getDefaultBgColor = useMemo(
         () => (countryId: string) => {
-            if (answeredCountriesMap.has(countryId)) {
+            const country = answeredCountriesMap.get(countryId);
+            if (country) {
+                if (country.passed) {
+                    return '#B0B0B0';
+                }
                 return '#A0D3FF';
             }
 
@@ -45,7 +50,11 @@ export const GeographyMap: FunctionComponent<{
 
     const getHoverBgColor = useMemo(
         () => (countryId: string) => {
-            if (answeredCountriesMap.has(countryId)) {
+            const country = answeredCountriesMap.get(countryId);
+            if (country) {
+                if (country.passed) {
+                    return '#B0B0B0';
+                }
                 return '#A0D3FF';
             }
             return '#F53';
@@ -55,7 +64,11 @@ export const GeographyMap: FunctionComponent<{
 
     const getPressedBgColor = useMemo(
         () => (countryId: string) => {
-            if (answeredCountriesMap.has(countryId)) {
+            const country = answeredCountriesMap.get(countryId);
+            if (country) {
+                if (country.passed) {
+                    return '#B0B0B0';
+                }
                 return '#A0D3FF';
             }
             return '#E42';
