@@ -12,7 +12,6 @@ import {
 } from 'react';
 import { MdOutlineTipsAndUpdates, MdShuffle } from 'react-icons/md';
 import { PiEyesFill } from 'react-icons/pi';
-import { VscTriangleRight } from 'react-icons/vsc';
 import { Modal, ToastType } from './common';
 import { ToastContext } from './layout';
 
@@ -101,8 +100,7 @@ export const PassButton: FunctionComponent<{
             className=" bg-green-500 text-white test-xs lg:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300 flex items-center justify-center gap-x-1"
             onClick={pass}
         >
-            <VscTriangleRight className="size-6" />
-            <span className="hidden lg:block">パス</span>
+            <span className="">パス</span>
         </button>
     );
 };
@@ -120,7 +118,7 @@ export const FinishButton: FunctionComponent<{
         <button
             type="button"
             onClick={finishAnswering}
-            className=" bg-blue-500 text-white test-xs md:text-sm p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300"
+            className=" bg-blue-500 text-white test-xs md:text-sm p-2 font-semibold rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300"
         >
             回答終了
         </button>

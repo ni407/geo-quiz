@@ -3,7 +3,7 @@ import { BackButton } from '@/component/layout';
 import { GeographyMap } from '@/component/map';
 import { getFlagImageUrl } from '@/lib/flag';
 import { Geometry, Region, geographyData as allGeographyData, regions } from '@/lib/geography';
-import { getOneRegionGeographyData, useWindowSize } from '@/lib/util';
+import { getOneRegionGeographyData } from '@/lib/util';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
@@ -33,16 +33,14 @@ export default function Dictionary() {
         setZoomRate(defaultZoomRate);
     }, []);
 
-    const headerHeight = 64;
-    const { width, height } = useWindowSize();
-    const contentHeight = height - headerHeight * 2;
+    const flagAreaHeight = 160;
 
     return (
-        <div className="min-h-screen px-4 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100 ">
-            <div style={{ height: `${headerHeight}px` }}>
+        <div className="h-screen px-4 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100 ">
+            <div className="h-16">
                 <BackButton />
             </div>
-            <div className="flex flex-col lg:flex-row lg:items-center gap-2 mt-4">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-2 my-4">
                 <RegionSelector selectedRegion={selectedRegion} changeRegion={changeRegion} />
                 {selectedCountry && (
                     <CountrySelector
@@ -55,39 +53,48 @@ export default function Dictionary() {
                     />
                 )}
             </div>
-            <div className="w-full pt-4">
-                <div className="relative bg-white shadow">
+            <div className="w-full">
+                <div className="flex flex-col justify-center my-8">
+                    {selectedCountry && (
+                        <div className="flex gap-x-4 items-center">
+                            <h2 className="text-lg lg:text-xl font-bold">
+                                {selectedCountry.properties.jpNames[0]}
+                            </h2>
+                            <img
+                                src={getFlagImageUrl(selectedCountry.id)}
+                                alt={selectedCountry.id}
+                                width={256}
+                                height={192}
+                                className="w-24 lg:w-32"
+                            />
+                        </div>
+                    )}
+                </div>
+                <div className="hidden lg:block bg-white shadow rounded-2xl">
                     <GeographyMap
                         selectedCountry={selectedCountry}
-                        geographyData={geographyData}
+                        geographyData={allGeographyData}
                         answeredCountriesMap={new Map()}
                         zoomRate={zoomRate}
                         inputRef={null}
                         setSelectedCountry={setSelectedCountry}
                         setUserInput={() => {}}
-                        mapScale={250}
-                        mapCenter={selectedCountry?.properties.coordinates}
-                        height={contentHeight}
-                        width={width}
+                        mapScale={100}
+                        height={250}
                     />
-                    <div className="absolute top-1 left-3">
-                        <div className="flex flex-col justify-center items-center h-full">
-                            {selectedCountry && (
-                                <div className="">
-                                    <h2 className="text-lg lg:text-xl text-center font-bold">
-                                        {selectedCountry.properties.jpNames[0]}
-                                    </h2>
-                                    <img
-                                        src={getFlagImageUrl(selectedCountry.id)}
-                                        alt={selectedCountry.id}
-                                        width={256}
-                                        height={192}
-                                        className="w-24 lg:w-32"
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                </div>
+                <div className="block lg:hidden bg-white shadow rounded-2xl">
+                    <GeographyMap
+                        selectedCountry={selectedCountry}
+                        geographyData={allGeographyData}
+                        answeredCountriesMap={new Map()}
+                        zoomRate={zoomRate}
+                        inputRef={null}
+                        setSelectedCountry={setSelectedCountry}
+                        setUserInput={() => {}}
+                        mapScale={150}
+                        height={600}
+                    />
                 </div>
             </div>
         </div>
