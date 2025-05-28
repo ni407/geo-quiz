@@ -39,17 +39,13 @@ export default function Dictionary() {
 
     return (
         <div className="min-h-screen px-4 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100 ">
-            <BackButton />
-            <div
-                className="flex items-start justify-start gap-x-2 lg:gap-x-8"
-                style={{
-                    paddingTop: `${headerHeight}px`,
-                    paddingBottom: `${headerHeight}px`,
-                }}
-            >
+            <div style={{ height: `${headerHeight}px` }}>
+                <BackButton />
+            </div>
+            <div className="flex items-start justify-start gap-x-2 lg:gap-x-8">
                 <div className="pt-4">
                     <RegionSelector selectedRegion={selectedRegion} changeRegion={changeRegion} />
-                    <ul className="p-2 lg:p-4 flex flex-col gap-y-2 overflow-y-auto h-[500px] lg:h-[600px] bg-white">
+                    <ul className="p-2 lg:p-4 flex flex-col gap-y-2 overflow-y-auto bg-white">
                         {selectedRegionCountries.map((item) => (
                             <li
                                 key={item.id}
