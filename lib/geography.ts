@@ -657,7 +657,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Fiji',
                         region: 'オセアニア',
-                        jpNames: ['フィジー'],
+                        jpNames: ['フィジー', 'フィジー共和国', 'ふぃじーきょうわこく'],
                         coordinates: [178.4419, -18.1416],
                     },
                 },
@@ -1990,7 +1990,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Vanuatu',
                         region: 'オセアニア',
-                        jpNames: ['バヌアツ'],
+                        jpNames: ['バヌアツ', 'バヌアツ共和国', 'ばぬあつきょうわこく'],
                         coordinates: [168.3167, -17.7333],
                     },
                 },
@@ -2089,7 +2089,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Seychelles',
                         region: 'アフリカ',
-                        jpNames: ['セーシェル'],
+                        jpNames: ['セーシェル', 'セーシェル共和国', 'せーしぇるきょうわこく'],
                         coordinates: [55.45, -4.6167],
                     },
                 },
@@ -2144,7 +2144,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Nauru',
                         region: 'オセアニア',
-                        jpNames: ['ナウル'],
+                        jpNames: ['ナウル', 'ナウル共和国', 'なうるきょうわこく'],
                         coordinates: [166.9167, -0.5333],
                     },
                 },
@@ -2155,7 +2155,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Palau',
                         region: 'オセアニア',
-                        jpNames: ['パラオ'],
+                        jpNames: ['パラオ', 'パラオ共和国', 'ぱらおきょうわこく'],
                         coordinates: [134.6167, 7.5],
                     },
                 },
@@ -2166,7 +2166,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Samoa',
                         region: 'オセアニア',
-                        jpNames: ['サモア'],
+                        jpNames: ['サモア', 'サモア独立国', 'さもあどくりつこく'],
                         coordinates: [-171.8333, -13.9333],
                     },
                 },
@@ -2188,7 +2188,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Tonga',
                         region: 'オセアニア',
-                        jpNames: ['トンガ'],
+                        jpNames: ['トンガ', 'トンガ王国', 'とんがおうこく'],
                         coordinates: [-175.2, -21.1333],
                     },
                 },
@@ -2350,7 +2350,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Kiribati',
                         region: 'オセアニア',
-                        jpNames: ['キリバス'],
+                        jpNames: ['キリバス', 'キリバス共和国', 'きりばすきょうわこく'],
                         coordinates: [172.9855, 1.3294],
                     },
                 },
@@ -2374,6 +2374,28 @@ export const geographyData: GeographyData = {
                         region: 'ヨーロッパ',
                         jpNames: ['バチカン市国', 'バチカンしこく', 'バチカン'],
                         coordinates: [12.4534, 41.9029],
+                    },
+                },
+                {
+                    type: 'Polygon',
+                    arcs: [[769]],
+                    id: 'NIU',
+                    properties: {
+                        name: 'Niue',
+                        region: 'オセアニア',
+                        jpNames: ['二ウエ'],
+                        coordinates: [-169.8667, -19.0333],
+                    },
+                },
+                {
+                    type: 'Polygon',
+                    arcs: [[770]],
+                    id: 'COK',
+                    properties: {
+                        name: 'Cook Islands',
+                        region: 'オセアニア',
+                        jpNames: ['クック諸島', 'くっくしょとう'],
+                        coordinates: [-159.7762, -21.2335],
                     },
                 },
             ],
@@ -12315,10 +12337,16 @@ export const geographyData: GeographyData = {
             [12.37, 43.93],
         ],
         [
-            [12.4527, 41.9042],
-            [12.4539, 41.9005],
-            [12.4552, 41.9022],
-            [12.4516, 41.9032],
+            [-169.867, -19.033],
+            [-169.8806, -19.1558],
+            [-169.8697, -19.033],
+            [-169.8667, -19.0667],
+        ],
+        [
+            [-157.29, -20.1583],
+            [-165.85, -10.8833],
+            [-157.85, -8.9833],
+            [-157.9231, -21.9214],
         ],
     ],
     bbox: [-180, -55.61183, 180, 83.64513],

@@ -202,6 +202,8 @@ export const countryIsoCodes: Record<string, string> = {
     SSD: 'SS',
     KIR: 'KI',
     STP: 'ST',
+    NIU: 'NU',
+    COK: 'CK',
 };
 
 export const convertIdToIsoCode = (id: string): string => {
