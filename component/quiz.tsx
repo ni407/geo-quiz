@@ -177,17 +177,24 @@ export const HintButton: FunctionComponent<{
                                         alt={selectedCountry.id}
                                         width={256}
                                         height={192}
+                                        key={`${selectedCountry.id}-${type}`}
                                     />
                                 );
                             case HintType.Region:
                                 return (
-                                    <p className="text-xl font-bold">
+                                    <p
+                                        className="text-xl font-bold"
+                                        key={`${selectedCountry.id}-${type}`}
+                                    >
                                         {selectedCountry.properties.region}の国です
                                     </p>
                                 );
                             case HintType.Initial:
                                 return (
-                                    <p className="text-xl font-bold">
+                                    <p
+                                        className="text-xl font-bold"
+                                        key={`${selectedCountry.id}-${type}`}
+                                    >
                                         最初の文字は "
                                         <span className="mx-1 tracking-widest">
                                             {selectedCountry.properties.jpNames[0].substring(0, 1)}(
@@ -198,7 +205,10 @@ export const HintButton: FunctionComponent<{
                                 );
                             case HintType.Description:
                                 return (
-                                    <p className="text-xl font-bold">
+                                    <p
+                                        className="text-xl font-bold"
+                                        key={`${selectedCountry.id}-${type}`}
+                                    >
                                         {getDescriptionFromId(selectedCountry.id)}
                                     </p>
                                 );
