@@ -1,6 +1,7 @@
 'use client';
 import { BackButton } from '@/component/layout';
 import { GeographyMap } from '@/component/map';
+import { getDescriptionFromId } from '@/lib/description';
 import { getFlagImageUrl } from '@/lib/flag';
 import { Geometry, Region, geographyData as allGeographyData, regions } from '@/lib/geography';
 import { getOneRegionGeographyData } from '@/lib/util';
@@ -56,18 +57,27 @@ export default function Dictionary() {
             <div className="w-full">
                 <div className="flex flex-col justify-center my-8">
                     {selectedCountry && (
-                        <div className="flex gap-x-4 items-center">
-                            <h2 className="text-lg lg:text-xl font-bold">
-                                {selectedCountry.properties.jpNames[0]}
-                            </h2>
-                            <img
-                                src={getFlagImageUrl(selectedCountry.id)}
-                                alt={selectedCountry.id}
-                                width={256}
-                                height={192}
-                                className="w-24 lg:w-32"
-                            />
-                        </div>
+                        <>
+                            <div className="flex flex-col lg:flex-row gap-4 lg:items-center mb-4">
+                                <div className="lg:w-92">
+                                    <h2 className="text-lg lg:text-xl font-bold">
+                                        {selectedCountry.properties.jpNames[0]}
+                                    </h2>
+                                </div>
+                                <img
+                                    src={getFlagImageUrl(selectedCountry.id)}
+                                    alt={selectedCountry.id}
+                                    width={256}
+                                    height={192}
+                                    className="w-24 lg:w-32"
+                                />
+                            </div>
+                            <div>
+                                <p className="text-sm lg:text-base text-gray-600">
+                                    {getDescriptionFromId(selectedCountry.id)}
+                                </p>
+                            </div>
+                        </>
                     )}
                 </div>
                 <div className="hidden lg:block bg-white shadow rounded-2xl">

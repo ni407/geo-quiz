@@ -1,4 +1,5 @@
 import { AnsweredCountriesMap } from '@/app/quiz/map/exam/page';
+import { getDescriptionFromId } from '@/lib/description';
 import { getFlagImageUrl } from '@/lib/flag';
 import { GeographyData, Geometry } from '@/lib/geography';
 import { checkAnswer, pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
@@ -125,9 +126,16 @@ export const FinishButton: FunctionComponent<{
     );
 };
 
-export const FlagHintButton: FunctionComponent<{
+export enum HintType {
+    Flag = 'flag',
+    Region = 'region',
+    Initial = 'initial',
+    Description = 'description',
+}
+export const HintButton: FunctionComponent<{
     selectedCountry: Geometry | null;
-}> = ({ selectedCountry }) => {
+    hintTypes: HintType[];
+}> = ({ selectedCountry, hintTypes }) => {
     if (!selectedCountry) return null;
     const [showHint, setShowHint] = useState(false);
     const onClick = () => {
@@ -135,6 +143,11 @@ export const FlagHintButton: FunctionComponent<{
             setShowHint(true);
         }
     };
+
+    if (hintTypes.length === 0) {
+        alert('ヒントがありません。');
+        return null;
+    }
 
     return (
         <>
@@ -154,94 +167,45 @@ export const FlagHintButton: FunctionComponent<{
                 footer={null}
                 closeWhenClickOutside
             >
-                <div className="flex flex-col items-center justify-center py-8">
-                    <img
-                        src={getFlagImageUrl(selectedCountry.id)}
-                        alt={selectedCountry.id}
-                        width={256}
-                        height={192}
-                    />
-                </div>
-            </Modal>
-        </>
-    );
-};
-
-export const RegionHintButton: FunctionComponent<{
-    selectedCountry: Geometry | null;
-}> = ({ selectedCountry }) => {
-    if (!selectedCountry) return null;
-    const [showHint, setShowHint] = useState(false);
-    const onClick = () => {
-        if (confirm('ヒントを表示しても良いですか？')) {
-            setShowHint(true);
-        }
-    };
-
-    return (
-        <>
-            <button
-                type="button"
-                onClick={onClick}
-                className="bg-amber-500 text-white test-xs lg:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300 flex items-center justify-center gap-x-1"
-            >
-                <MdOutlineTipsAndUpdates className="size-6" />
-                <span className="hidden lg:block">ヒント</span>
-            </button>
-            <Modal
-                visible={showHint}
-                setVisible={setShowHint}
-                onClose={() => setShowHint(false)}
-                title="ヒント"
-                footer={null}
-                closeWhenClickOutside
-            >
-                <div className="flex flex-col items-center justify-center py-8">
-                    <p className="text-xl font-bold">{selectedCountry.properties.region}の国です</p>
-                </div>
-            </Modal>
-        </>
-    );
-};
-
-export const InitialHintButton: FunctionComponent<{
-    selectedCountry: Geometry | null;
-}> = ({ selectedCountry }) => {
-    if (!selectedCountry) return null;
-    const [showHint, setShowHint] = useState(false);
-    const onClick = () => {
-        if (confirm('ヒントを表示しても良いですか？')) {
-            setShowHint(true);
-        }
-    };
-
-    return (
-        <>
-            <button
-                type="button"
-                onClick={onClick}
-                className="bg-amber-500 text-white test-xs lg:text-sm font-semibold p-2 rounded h-10 w-36 whitespace-nowrap cursor-pointer disabled:bg-gray-300 flex items-center justify-center gap-x-1"
-            >
-                <MdOutlineTipsAndUpdates className="size-6" />
-                <span className="hidden lg:block">ヒント</span>
-            </button>
-            <Modal
-                visible={showHint}
-                setVisible={setShowHint}
-                onClose={() => setShowHint(false)}
-                title="ヒント"
-                footer={null}
-                closeWhenClickOutside
-            >
-                <div className="flex flex-col items-center justify-center py-8">
-                    <p className="text-xl font-bold">
-                        最初の文字は "
-                        <span className="mx-1 tracking-widest">
-                            {selectedCountry.properties.jpNames[0].substring(0, 1)}(
-                            {selectedCountry.properties.name.substring(0, 1)})
-                        </span>
-                        "です
-                    </p>
+                <div className="flex flex-col items-center justify-center py-8 gap-4">
+                    {hintTypes.map((type) => {
+                        switch (type) {
+                            case HintType.Flag:
+                                return (
+                                    <img
+                                        src={getFlagImageUrl(selectedCountry.id)}
+                                        alt={selectedCountry.id}
+                                        width={256}
+                                        height={192}
+                                    />
+                                );
+                            case HintType.Region:
+                                return (
+                                    <p className="text-xl font-bold">
+                                        {selectedCountry.properties.region}の国です
+                                    </p>
+                                );
+                            case HintType.Initial:
+                                return (
+                                    <p className="text-xl font-bold">
+                                        最初の文字は "
+                                        <span className="mx-1 tracking-widest">
+                                            {selectedCountry.properties.jpNames[0].substring(0, 1)}(
+                                            {selectedCountry.properties.name.substring(0, 1)})
+                                        </span>
+                                        "です
+                                    </p>
+                                );
+                            case HintType.Description:
+                                return (
+                                    <p className="text-xl font-bold">
+                                        {getDescriptionFromId(selectedCountry.id)}
+                                    </p>
+                                );
+                            default:
+                                return null;
+                        }
+                    })}
                 </div>
             </Modal>
         </>

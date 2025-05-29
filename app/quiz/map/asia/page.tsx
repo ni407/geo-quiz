@@ -6,7 +6,8 @@ import {
     AnswerInput,
     CheetButton,
     CurrentStatus,
-    FlagHintButton,
+    HintButton,
+    HintType,
     ShuffleButton,
 } from '@/component/quiz';
 import { Geometry } from '@/lib/geography';
@@ -108,7 +109,10 @@ export default function Page() {
                             selectRandomUnansweredCountry(nextCountryExceptions);
                         }}
                     />
-                    <FlagHintButton selectedCountry={selectedCountry} />
+                    <HintButton
+                        selectedCountry={selectedCountry}
+                        hintTypes={[HintType.Flag, HintType.Description]}
+                    />
                     <CheetButton selectedCountry={selectedCountry} inputRef={ref} />
                 </AnswerForm>
             </Drawer>
