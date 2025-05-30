@@ -9,6 +9,7 @@ import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headless
 import { FunctionComponent, useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { MdNavigateNext } from 'react-icons/md';
+import { useSwipeable } from 'react-swipeable';
 
 export default function Dictionary() {
     const [selectedRegion, setSelectedRegion] = useState<Region>('アジア');
@@ -107,6 +108,11 @@ export default function Dictionary() {
         };
     }, [selectedRegionCountries, selectedCountry]);
 
+    const handlers = useSwipeable({
+        onSwipedLeft: () => nextCountry(),
+        onSwipedRight: () => prevCountry(),
+    });
+
     return (
         <div className="h-screen px-4 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100 ">
             <div className="h-16">
@@ -126,7 +132,7 @@ export default function Dictionary() {
                 )}
             </div>
             <div className="w-full ">
-                <div className="h-40 flex items-center my-8 gap-x-4 lg:gap-x-8">
+                <div {...handlers} className="h-40 flex items-center my-8 gap-x-4 lg:gap-x-8">
                     <MdNavigateNext
                         className="size-8 rotate-180 cursor-pointer"
                         onClick={prevCountry}
