@@ -9,6 +9,7 @@ export const GeographyMap: FunctionComponent<{
     selectedCountry: Geometry | null;
     geographyData: GeographyData;
     answeredCountriesMap: AnsweredCountriesMap;
+    setAnsweredCountriesMap: Dispatch<SetStateAction<AnsweredCountriesMap>>;
     zoomRate: number;
     inputRef: RefObject<HTMLInputElement | null> | null;
     setSelectedCountry: Dispatch<SetStateAction<Geometry | null>>;
@@ -21,6 +22,7 @@ export const GeographyMap: FunctionComponent<{
     selectedCountry,
     geographyData,
     answeredCountriesMap,
+    setAnsweredCountriesMap,
     zoomRate,
     inputRef,
     setSelectedCountry,
@@ -77,8 +79,18 @@ export const GeographyMap: FunctionComponent<{
     );
 
     const handleCountryClick = (geo: Geometry) => {
-        if (answeredCountriesMap.has(geo.id)) {
-            alert(geo.properties.jpNames[0]);
+        const answeredCountry = answeredCountriesMap.get(geo.id);
+        if (answeredCountry) {
+            if (answeredCountry.passed) {
+                if (confirm('この国はパスされています。再度回答しますか？')) {
+                    const newAnsweredCountriesMap = new Map(answeredCountriesMap);
+                    newAnsweredCountriesMap.delete(geo.id);
+                    setAnsweredCountriesMap(newAnsweredCountriesMap);
+                    setSelectedCountry(geo);
+                }
+            } else {
+                alert(geo.properties.jpNames[0]);
+            }
             inputRef?.current?.focus();
             return;
         }

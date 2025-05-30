@@ -117,6 +117,7 @@ ${location.origin}
                 selectedCountry={selectedCountry}
                 geographyData={geographyData}
                 answeredCountriesMap={answeredCountriesMap}
+                setAnsweredCountriesMap={setAnsweredCountriesMap}
                 zoomRate={zoomRate}
                 inputRef={ref}
                 setSelectedCountry={setSelectedCountry}

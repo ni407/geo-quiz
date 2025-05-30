@@ -8,6 +8,7 @@ import { getOneRegionGeographyData } from '@/lib/util';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
+import { MdNavigateNext } from 'react-icons/md';
 
 export default function Dictionary() {
     const [selectedRegion, setSelectedRegion] = useState<Region>('アジア');
@@ -34,7 +35,77 @@ export default function Dictionary() {
         setZoomRate(defaultZoomRate);
     }, []);
 
-    const flagAreaHeight = 160;
+    const prevCountry = () => {
+        const currentIndex = selectedRegionCountries.findIndex(
+            (country) => country.id === selectedCountry?.id,
+        );
+        if (currentIndex > 0) {
+            const prevCountry = selectedRegionCountries[currentIndex - 1];
+            setSelectedCountry(prevCountry);
+        } else {
+            const currentRegionIndex = regions.indexOf(selectedRegion);
+            if (currentRegionIndex > 0) {
+                const newRegion = regions[currentRegionIndex - 1];
+                //allGeographyData.objects.world.geometriesのregionが一致する中で最後の国を選択
+                const lastCountryInNewRegion = allGeographyData.objects.world.geometries
+                    .filter((geo) => geo.properties.region === newRegion)
+                    .slice(-1)[0];
+                setSelectedRegion(newRegion);
+                setSelectedCountry(lastCountryInNewRegion ?? null);
+            } else {
+                setSelectedRegion(regions[regions.length - 1]);
+                //allGeographyData.objects.world.geometriesのregionが一致する中で最後の国を選択
+                const lastCountryInNewRegion = allGeographyData.objects.world.geometries
+                    .filter((geo) => geo.properties.region === regions[regions.length - 1])
+                    .slice(-1)[0];
+                setSelectedCountry(lastCountryInNewRegion ?? null);
+            }
+        }
+    };
+
+    const nextCountry = () => {
+        const currentIndex = selectedRegionCountries.findIndex(
+            (country) => country.id === selectedCountry?.id,
+        );
+        if (currentIndex < selectedRegionCountries.length - 1) {
+            const nextCountry = selectedRegionCountries[currentIndex + 1];
+            setSelectedCountry(nextCountry);
+        } else {
+            const currentRegionIndex = regions.indexOf(selectedRegion);
+            if (currentRegionIndex < regions.length - 1) {
+                const newRegion = regions[currentRegionIndex + 1];
+                //allGeographyData.objects.world.geometriesのregionが一致する中で最初の国を選択
+                const firstCountryInNewRegion = allGeographyData.objects.world.geometries.filter(
+                    (geo) => geo.properties.region === newRegion,
+                )[0];
+                setSelectedRegion(newRegion);
+                setSelectedCountry(firstCountryInNewRegion ?? null);
+            } else {
+                setSelectedRegion(regions[0]);
+                //allGeographyData.objects.world.geometriesのregionが一致する中で最初の国を選択
+                const firstCountryInNewRegion = allGeographyData.objects.world.geometries.filter(
+                    (geo) => geo.properties.region === regions[0],
+                )[0];
+                setSelectedCountry(firstCountryInNewRegion ?? null);
+            }
+        }
+    };
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                prevCountry();
+            } else if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                nextCountry();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [selectedRegionCountries, selectedCountry]);
 
     return (
         <div className="h-screen px-4 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100 ">
@@ -54,16 +125,15 @@ export default function Dictionary() {
                     />
                 )}
             </div>
-            <div className="w-full">
-                <div className="flex flex-col justify-center my-8">
+            <div className="w-full ">
+                <div className="h-40 flex items-center my-8 gap-x-4 lg:gap-x-8">
+                    <MdNavigateNext
+                        className="size-8 rotate-180 cursor-pointer"
+                        onClick={prevCountry}
+                    />
                     {selectedCountry && (
-                        <>
-                            <div className="flex flex-col lg:flex-row gap-4 lg:items-center mb-4">
-                                <div className="lg:w-92">
-                                    <h2 className="text-lg lg:text-xl font-bold">
-                                        {selectedCountry.properties.jpNames[0]}
-                                    </h2>
-                                </div>
+                        <div className="w-4/5 lg:w-[600px]">
+                            <div className="flex items-center gap-x-4 lg:gap-x-8 mb-6">
                                 <img
                                     src={getFlagImageUrl(selectedCountry.id)}
                                     alt={selectedCountry.id}
@@ -71,20 +141,27 @@ export default function Dictionary() {
                                     height={192}
                                     className="w-24 lg:w-32"
                                 />
+                                <div className="">
+                                    <h2 className="text-lg lg:text-xl font-bold">
+                                        {selectedCountry.properties.jpNames[0]}
+                                    </h2>
+                                </div>
                             </div>
                             <div>
                                 <p className="text-sm lg:text-base text-gray-600">
                                     {getDescriptionFromId(selectedCountry.id)}
                                 </p>
                             </div>
-                        </>
+                        </div>
                     )}
+                    <MdNavigateNext className="size-8 cursor-pointer" onClick={nextCountry} />
                 </div>
                 <div className="hidden lg:block bg-white shadow rounded-2xl">
                     <GeographyMap
                         selectedCountry={selectedCountry}
                         geographyData={allGeographyData}
                         answeredCountriesMap={new Map()}
+                        setAnsweredCountriesMap={() => {}}
                         zoomRate={zoomRate}
                         inputRef={null}
                         setSelectedCountry={setSelectedCountry}
@@ -98,6 +175,7 @@ export default function Dictionary() {
                         selectedCountry={selectedCountry}
                         geographyData={allGeographyData}
                         answeredCountriesMap={new Map()}
+                        setAnsweredCountriesMap={() => {}}
                         zoomRate={zoomRate}
                         inputRef={null}
                         setSelectedCountry={setSelectedCountry}

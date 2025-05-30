@@ -33,7 +33,7 @@ export default function Page() {
         ref.current?.focus();
     };
 
-    const localStorageKey = 'flag-all-answeredCountriesMap';
+    const localStorageKey = 'flag-exam-answeredCountriesMap';
     const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
     useEffect(() => {

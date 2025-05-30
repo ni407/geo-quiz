@@ -22,7 +22,7 @@ export const QuizLayout: FunctionComponent<{
     return (
         <ToastContext.Provider value={{ toast, setToast }}>
             <div
-                className={'overflow-hidden w-screen'}
+                className={'overflow-hidden w-screen overflow-y-hidden'}
                 style={{ height: `calc(100vh - ${DrawerHeight}px)` }}
             >
                 {children}
