@@ -7,13 +7,13 @@ import {
     CurrentStatus,
     FinishButton,
     FinishModal,
-    PassButton,
+    SkipButton,
 } from '@/component/quiz';
 import { Geometry, geographyData } from '@/lib/geography';
 import { pickRandomUnAnsweredCountry, useLocalStorage, useWindowSize } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
 
-export type AnsweredCountriesMap = Map<string, Geometry & { passed?: boolean }>;
+export type AnsweredCountriesMap = Map<string, Geometry & { skipped?: boolean }>;
 export default function Page() {
     const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(null);
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<AnsweredCountriesMap>(
@@ -67,7 +67,7 @@ export default function Page() {
         localStorage.removeItem(localStorageKey);
     };
 
-    const score = [...answeredCountriesMap.values()].filter((country) => !country.passed).length;
+    const score = [...answeredCountriesMap.values()].filter((country) => !country.skipped).length;
     const copyToClipboard = async () => {
         const text = `GeoQuizの地図検定に挑戦しました！\n
 わたしのスコアは
@@ -93,7 +93,7 @@ ${location.origin}
             return;
         }
         const newMap = new Map(answeredCountriesMap);
-        newMap.set(selectedCountry.id, { ...selectedCountry, passed: true });
+        newMap.set(selectedCountry.id, { ...selectedCountry, skipped: true });
         setAnsweredCountriesMap(newMap);
         save(newMap);
         if (newMap.size === geometries.length) {
@@ -146,7 +146,7 @@ ${location.origin}
                     setFinishModalVisible={setFinishModalVisible}
                 >
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
-                    <PassButton onClick={pass} />
+                    <SkipButton onClick={pass} />
                     <FinishButton
                         onClick={() => {
                             setFinishModalVisible(true);

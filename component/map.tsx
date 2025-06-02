@@ -5,6 +5,16 @@ import { Dispatch, FunctionComponent, RefObject, SetStateAction, useMemo } from 
 import { FaFlag } from 'react-icons/fa';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
 
+export const ColorPalette = {
+    ocean: '#F0F4F8',
+    default: '#C7C7C7',
+    selected: '#E42',
+    answered: '#A0D3FF',
+    skipped: '#9E9E9E',
+    border: '#616161',
+    flag: '#FACC15',
+};
+
 export const GeographyMap: FunctionComponent<{
     selectedCountry: Geometry | null;
     geographyData: GeographyData;
@@ -36,16 +46,16 @@ export const GeographyMap: FunctionComponent<{
         () => (countryId: string) => {
             const country = answeredCountriesMap.get(countryId);
             if (country) {
-                if (country.passed) {
-                    return '#B0B0B0';
+                if (country.skipped) {
+                    return ColorPalette.skipped;
                 }
-                return '#A0D3FF';
+                return ColorPalette.answered;
             }
 
             if (countryId === selectedCountry?.id) {
-                return '#E42';
+                return ColorPalette.selected;
             }
-            return '#EAEAEA';
+            return ColorPalette.default;
         },
         [selectedCountry, answeredCountriesMap],
     );
@@ -54,26 +64,12 @@ export const GeographyMap: FunctionComponent<{
         () => (countryId: string) => {
             const country = answeredCountriesMap.get(countryId);
             if (country) {
-                if (country.passed) {
-                    return '#B0B0B0';
+                if (country.skipped) {
+                    return ColorPalette.skipped;
                 }
-                return '#A0D3FF';
+                return ColorPalette.answered;
             }
-            return '#F53';
-        },
-        [answeredCountriesMap],
-    );
-
-    const getPressedBgColor = useMemo(
-        () => (countryId: string) => {
-            const country = answeredCountriesMap.get(countryId);
-            if (country) {
-                if (country.passed) {
-                    return '#B0B0B0';
-                }
-                return '#A0D3FF';
-            }
-            return '#E42';
+            return ColorPalette.selected;
         },
         [answeredCountriesMap],
     );
@@ -81,7 +77,7 @@ export const GeographyMap: FunctionComponent<{
     const handleCountryClick = (geo: Geometry) => {
         const answeredCountry = answeredCountriesMap.get(geo.id);
         if (answeredCountry) {
-            if (answeredCountry.passed) {
+            if (answeredCountry.skipped) {
                 if (confirm('この国はパスされています。再度回答しますか？')) {
                     const newAnsweredCountriesMap = new Map(answeredCountriesMap);
                     newAnsweredCountriesMap.delete(geo.id);
@@ -109,6 +105,7 @@ export const GeographyMap: FunctionComponent<{
                 scale: mapScale,
                 center: mapCenter,
             }}
+            style={{ backgroundColor: ColorPalette.ocean }}
         >
             <ZoomableGroup center={selectedCountry?.properties.coordinates} zoom={zoomRate}>
                 <Geographies geography={geographyData}>
@@ -118,7 +115,7 @@ export const GeographyMap: FunctionComponent<{
                                 <Geography
                                     key={geo.rsmKey}
                                     geography={geo}
-                                    stroke="#FFF"
+                                    stroke={ColorPalette.border}
                                     strokeWidth={0.3}
                                     onClick={() => {
                                         handleCountryClick(geo);
@@ -126,7 +123,6 @@ export const GeographyMap: FunctionComponent<{
                                     style={{
                                         default: { fill: getDefaultBgColor(geo.id) },
                                         hover: { fill: getHoverBgColor(geo.id) },
-                                        pressed: { fill: getPressedBgColor(geo.id) },
                                     }}
                                     className="focus:outline-none"
                                 />
@@ -145,7 +141,7 @@ export const GeographyMap: FunctionComponent<{
                         coordinates={selectedCountry.properties.coordinates}
                         className="-translate-y-[15px]"
                     >
-                        <FaFlag className=" text-yellow-400" />
+                        <FaFlag style={{ color: ColorPalette.flag }} />
                     </Marker>
                 )}
             </ZoomableGroup>

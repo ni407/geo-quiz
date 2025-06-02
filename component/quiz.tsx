@@ -20,16 +20,16 @@ export const CurrentStatus: FunctionComponent<{
     answeredCountriesMap: AnsweredCountriesMap;
     geometries: Geometry[];
 }> = ({ answeredCountriesMap, geometries }) => {
-    const passedCountriesNum = [...answeredCountriesMap.values()].filter(
-        (country) => country.passed,
+    const skippedCountriesNum = [...answeredCountriesMap.values()].filter(
+        (country) => country.skipped,
     ).length;
     return (
         <p className="text-lg font-bold">
             現在の回答状況：{answeredCountriesMap.size}/{geometries.length}カ国
-            {passedCountriesNum > 0 && (
+            {skippedCountriesNum > 0 && (
                 <span className="text-sm">
                     （
-                    {[...answeredCountriesMap.values()].filter((country) => country.passed).length}
+                    {[...answeredCountriesMap.values()].filter((country) => country.skipped).length}
                     カ国パス）
                 </span>
             )}
@@ -86,7 +86,7 @@ export const ShuffleButton: FunctionComponent<{
     );
 };
 
-export const PassButton: FunctionComponent<{
+export const SkipButton: FunctionComponent<{
     onClick: () => void;
 }> = ({ onClick }) => {
     const pass = () => {
@@ -286,7 +286,7 @@ export const AnswerForm: FunctionComponent<{
         }
 
         const newMap = new Map(answeredCountriesMap);
-        newMap.set(selectedCountry.id, { ...selectedCountry, passed: false });
+        newMap.set(selectedCountry.id, { ...selectedCountry, skipped: false });
         setAnsweredCountriesMap(newMap);
         setUserInput('');
         setToast({
@@ -316,7 +316,7 @@ export const AnswerForm: FunctionComponent<{
                 });
                 clearSaveData();
                 setAnsweredCountriesMap(new Map());
-                setSelectedCountry(null);
+                setSelectedCountry(geometries[Math.floor(Math.random() * geometries.length)]);
             }
             return;
         }
