@@ -2384,7 +2384,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Niue',
                         region: 'オセアニア',
-                        jpNames: ['二ウエ'],
+                        jpNames: ['ニウエ'],
                         coordinates: [-169.8667, -19.0333],
                     },
                 },
