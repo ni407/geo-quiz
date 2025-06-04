@@ -6,10 +6,10 @@ import { FaFlag } from 'react-icons/fa';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
 
 export const ColorPalette = {
-    ocean: '#F0F4F8',
-    default: '#C7C7C7',
-    selected: '#E42',
-    answered: '#A0D3FF',
+    ocean: '#3499BD',
+    default: '#F3F3F3',
+    selected: '#FF6F6E',
+    answered: '#79FE56',
     skipped: '#9E9E9E',
     border: '#616161',
     flag: '#FACC15',
