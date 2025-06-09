@@ -93,7 +93,6 @@ export default function Page() {
                     setZoomRate={setZoomRate}
                     defaultZoomRate={defaultZoomRate}
                     geometries={geographyData.objects.world.geometries}
-                    prioritizeSameRegion
                 >
                     <AnswerInput userInput={userInput} setUserInput={setUserInput} inputRef={ref} />
                     <ShuffleButton
