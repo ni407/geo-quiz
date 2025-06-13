@@ -296,7 +296,7 @@ export const AnswerForm: FunctionComponent<{
                 <div className="flex items-center gap-x-1">
                     正解です！
                     <br />
-                    <img
+                    <Image
                         src={getFlagImageUrl(selectedCountry.id)}
                         alt={selectedCountry.id}
                         width={24}
