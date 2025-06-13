@@ -179,6 +179,7 @@ export const HintButton: FunctionComponent<{
                                         width={256}
                                         height={192}
                                         key={`${selectedCountry.id}-${type}`}
+                                        priority
                                     />
                                 );
                             case HintType.Region:
@@ -299,7 +300,7 @@ export const AnswerForm: FunctionComponent<{
                     <Image
                         src={getFlagImageUrl(selectedCountry.id)}
                         alt={selectedCountry.id}
-                        width={24}
+                        width={21}
                         height={16}
                     />
                 </div>

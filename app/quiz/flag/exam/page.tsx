@@ -17,9 +17,7 @@ import { AnsweredCountriesMap } from '../../map/exam/page';
 export default function Page() {
     const geometries = geographyData.objects.world.geometries;
 
-    const startCountry = geometries[Math.floor(Math.random() * geometries.length)];
-
-    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
+    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(null);
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<AnsweredCountriesMap>(
         new Map(),
     );
@@ -39,7 +37,14 @@ export default function Page() {
 
     const localStorageKey = 'flag-exam-answeredCountriesMap';
 
-    useQuizPreparation(localStorageKey, setAnsweredCountriesMap, selectRandomUnansweredCountry);
+    useQuizPreparation({
+        localStorageKey,
+        setAnsweredCountriesMap,
+        selectRandomUnansweredCountry,
+        reStartQuiz: () => {
+            selectRandomUnansweredCountry(new Map());
+        },
+    });
 
     const [finishModalVisible, setFinishModalVisible] = useState(false);
     const onClose = () => {

@@ -147,6 +147,7 @@ export default function Dictionary() {
                                     width={256}
                                     height={192}
                                     className="w-24 lg:w-32"
+                                    priority
                                 />
                                 <div className="">
                                     <h2 className="text-lg lg:text-xl font-bold">

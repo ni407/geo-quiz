@@ -13,6 +13,7 @@ export default function Home() {
                     className="size-20 mb-4 drop-shadow-lg"
                     width={80}
                     height={80}
+                    priority
                 />
                 <h1 className="text-5xl font-extrabold text-indigo-700 tracking-tight my-2">
                     GeoQuiz

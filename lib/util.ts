@@ -96,11 +96,17 @@ export const useLocalStorage = (localStorageKey: string) => {
     return { save, load, clearSaveData };
 };
 
-export const useQuizPreparation = (
-    localStorageKey: string,
-    setAnsweredCountriesMap: Dispatch<SetStateAction<Map<string, Geometry>>>,
-    selectRandomUnansweredCountry: (savedAnswerMap: Map<string, Geometry>) => void,
-) => {
+export const useQuizPreparation = ({
+    localStorageKey,
+    setAnsweredCountriesMap,
+    selectRandomUnansweredCountry,
+    reStartQuiz,
+}: {
+    localStorageKey: string;
+    setAnsweredCountriesMap: Dispatch<SetStateAction<Map<string, Geometry>>>;
+    selectRandomUnansweredCountry: (countriesMap: Map<string, Geometry>) => void;
+    reStartQuiz: () => void;
+}) => {
     const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
     useEffect(() => {
@@ -114,6 +120,7 @@ export const useQuizPreparation = (
             clearSaveData();
             setAnsweredCountriesMap(new Map());
         }
+        reStartQuiz();
     }, []);
 };
 

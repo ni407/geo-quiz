@@ -1,6 +1,6 @@
 'use client';
 import { Drawer, QuizLayout } from '@/component/layout';
-import { GeographyMap } from '@/component/map';
+import { ColorPalette, GeographyMap } from '@/component/map';
 import {
     AnswerForm,
     AnswerInput,
@@ -47,7 +47,14 @@ export default function Page() {
         ref.current?.focus();
     };
 
-    useQuizPreparation(localStorageKey, setAnsweredCountriesMap, selectRandomUnansweredCountry);
+    useQuizPreparation({
+        localStorageKey,
+        setAnsweredCountriesMap,
+        selectRandomUnansweredCountry,
+        reStartQuiz: () => {
+            selectRandomUnansweredCountry(new Map());
+        },
+    });
 
     const { width, contentHeight } = useWindowSize();
 
@@ -104,7 +111,7 @@ ${location.origin}
     };
 
     return (
-        <QuizLayout>
+        <QuizLayout backgroundColor={ColorPalette.ocean}>
             <GeographyMap
                 selectedCountry={selectedCountry}
                 geographyData={geographyData}

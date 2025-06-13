@@ -14,17 +14,16 @@ import { Geometry } from '@/lib/geography';
 import {
     getOneRegionGeographyData,
     pickRandomUnAnsweredCountry,
-    useLocalStorage,
+    useQuizPreparation,
 } from '@/lib/util';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function Page() {
     const geographyData = getOneRegionGeographyData('アフリカ');
     const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'EGY'); //エジプト
     const localStorageKey = 'flag-africa-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
-    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
+    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(null);
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<Map<string, Geometry>>(
         new Map(),
     );
@@ -42,18 +41,14 @@ export default function Page() {
         ref.current?.focus();
     };
 
-    useEffect(() => {
-        if (typeof window !== 'undefined' && localStorage.getItem(localStorageKey)) {
-            if (confirm('前回の途中から再開しますか？')) {
-                const savedAnswerMap = load();
-                setAnsweredCountriesMap(savedAnswerMap);
-                selectRandomUnansweredCountry(savedAnswerMap);
-                return;
-            }
-            clearSaveData();
-            setAnsweredCountriesMap(new Map());
-        }
-    }, []);
+    useQuizPreparation({
+        localStorageKey,
+        setAnsweredCountriesMap,
+        selectRandomUnansweredCountry,
+        reStartQuiz: () => {
+            setSelectedCountry(startCountry || null);
+        },
+    });
 
     return (
         <QuizLayout>

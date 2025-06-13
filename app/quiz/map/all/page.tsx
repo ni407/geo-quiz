@@ -1,6 +1,6 @@
 'use client';
 import { Drawer, QuizLayout } from '@/component/layout';
-import { GeographyMap } from '@/component/map';
+import { ColorPalette, GeographyMap } from '@/component/map';
 import {
     AnswerForm,
     AnswerInput,
@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 export default function Page() {
     const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'JPN');
 
-    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
+    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(null);
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<Map<string, Geometry>>(
         new Map(),
     );
@@ -45,11 +45,18 @@ export default function Page() {
 
     const localStorageKey = 'all-answeredCountriesMap';
 
-    useQuizPreparation(localStorageKey, setAnsweredCountriesMap, selectRandomUnansweredCountry);
+    useQuizPreparation({
+        localStorageKey,
+        setAnsweredCountriesMap,
+        selectRandomUnansweredCountry,
+        reStartQuiz: () => {
+            setSelectedCountry(startCountry || null);
+        },
+    });
     const { width, contentHeight } = useWindowSize();
 
     return (
-        <QuizLayout>
+        <QuizLayout backgroundColor={ColorPalette.ocean}>
             <GeographyMap
                 selectedCountry={selectedCountry}
                 geographyData={geographyData}

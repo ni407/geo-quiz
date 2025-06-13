@@ -17,13 +17,17 @@ export const ToastContext = createContext<ToastContextType>({
 });
 export const QuizLayout: FunctionComponent<{
     children: React.ReactNode;
-}> = ({ children }) => {
+    backgroundColor?: string;
+}> = ({ children, backgroundColor }) => {
     const [toast, setToast] = useState<Toast | null>(null);
     return (
         <ToastContext.Provider value={{ toast, setToast }}>
             <div
                 className={'overflow-hidden w-screen overflow-y-hidden'}
-                style={{ height: `calc(100vh - ${DrawerHeight}px)` }}
+                style={{
+                    height: `calc(100vh - ${DrawerHeight}px)`,
+                    backgroundColor: backgroundColor,
+                }}
             >
                 {children}
                 <BackButton />

@@ -100,7 +100,7 @@ export const Toast: FunctionComponent<{
         if (toast) {
             const timer = setTimeout(() => {
                 setVisible(null);
-            }, 3000);
+            }, 30000);
             return () => clearTimeout(timer);
         }
     }, [toast, setVisible]);
