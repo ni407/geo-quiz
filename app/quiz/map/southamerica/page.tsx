@@ -15,6 +15,7 @@ import {
     getOneRegionGeographyData,
     pickRandomUnAnsweredCountry,
     useLocalStorage,
+    useQuizPreparation,
     useWindowSize,
 } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
@@ -51,18 +52,7 @@ export default function Page() {
         ref.current?.focus();
     };
 
-    useEffect(() => {
-        if (localStorage.getItem(localStorageKey)) {
-            if (confirm('前回の途中から再開しますか？')) {
-                const savedAnswerMap = load();
-                setAnsweredCountriesMap(savedAnswerMap);
-                selectRandomUnansweredCountry(savedAnswerMap);
-                return;
-            }
-            clearSaveData();
-            setAnsweredCountriesMap(new Map());
-        }
-    }, []);
+    useQuizPreparation(localStorageKey, setAnsweredCountriesMap, selectRandomUnansweredCountry);
 
     const { width, contentHeight } = useWindowSize();
 

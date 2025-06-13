@@ -6,6 +6,7 @@ import { getFlagImageUrl } from '@/lib/flag';
 import { Geometry, Region, geographyData as allGeographyData, regions } from '@/lib/geography';
 import { getOneRegionGeographyData } from '@/lib/util';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
+import Image from 'next/image';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { MdNavigateNext } from 'react-icons/md';
@@ -140,7 +141,7 @@ export default function Dictionary() {
                     {selectedCountry && (
                         <div className="w-4/5 lg:w-[600px]">
                             <div className="flex items-center gap-x-4 lg:gap-x-8 mb-6">
-                                <img
+                                <Image
                                     src={getFlagImageUrl(selectedCountry.id)}
                                     alt={selectedCountry.id}
                                     width={256}

@@ -14,15 +14,14 @@ import { Geometry } from '@/lib/geography';
 import {
     getOneRegionGeographyData,
     pickRandomUnAnsweredCountry,
-    useLocalStorage,
+    useQuizPreparation,
 } from '@/lib/util';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function Page() {
     const geographyData = getOneRegionGeographyData('北アメリカ');
     const startCountry = geographyData.objects.world.geometries.find((geo) => geo.id === 'USA');
     const localStorageKey = 'flag-northamerica-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
     const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<Map<string, Geometry>>(
@@ -42,18 +41,7 @@ export default function Page() {
         ref.current?.focus();
     };
 
-    useEffect(() => {
-        if (localStorage.getItem(localStorageKey)) {
-            if (confirm('前回の途中から再開しますか？')) {
-                const savedAnswerMap = load();
-                setAnsweredCountriesMap(savedAnswerMap);
-                selectRandomUnansweredCountry(savedAnswerMap);
-                return;
-            }
-            clearSaveData();
-            setAnsweredCountriesMap(new Map());
-        }
-    }, []);
+    useQuizPreparation(localStorageKey, setAnsweredCountriesMap, selectRandomUnansweredCountry);
 
     return (
         <QuizLayout>

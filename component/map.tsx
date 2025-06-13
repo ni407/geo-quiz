@@ -1,6 +1,7 @@
 import { AnsweredCountriesMap } from '@/app/quiz/map/exam/page';
 import { getFlagImageUrl } from '@/lib/flag';
 import { GeographyData, Geometry } from '@/lib/geography';
+import Image from 'next/image';
 import { Dispatch, FunctionComponent, RefObject, SetStateAction, useMemo } from 'react';
 import { FaFlag } from 'react-icons/fa';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
@@ -126,7 +127,7 @@ export const GeographyMap: FunctionComponent<{
                                     }}
                                     className="focus:outline-none"
                                 />
-                                <img
+                                <Image
                                     src={getFlagImageUrl(geo.id)}
                                     alt={geo.id}
                                     width={256}

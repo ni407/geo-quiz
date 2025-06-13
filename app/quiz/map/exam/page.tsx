@@ -10,7 +10,12 @@ import {
     SkipButton,
 } from '@/component/quiz';
 import { Geometry, geographyData } from '@/lib/geography';
-import { pickRandomUnAnsweredCountry, useLocalStorage, useWindowSize } from '@/lib/util';
+import {
+    pickRandomUnAnsweredCountry,
+    useLocalStorage,
+    useQuizPreparation,
+    useWindowSize,
+} from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
 
 export type AnsweredCountriesMap = Map<string, Geometry & { skipped?: boolean }>;
@@ -20,7 +25,6 @@ export default function Page() {
         new Map(),
     );
     const localStorageKey = 'exam-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
     const [userInput, setUserInput] = useState<string>('');
     const defaultZoomRate = 1.5;
@@ -43,19 +47,7 @@ export default function Page() {
         ref.current?.focus();
     };
 
-    useEffect(() => {
-        if (localStorage.getItem(localStorageKey)) {
-            if (confirm('前回の途中から再開しますか？')) {
-                const savedAnswerMap = load();
-                setAnsweredCountriesMap(savedAnswerMap);
-                selectRandomUnansweredCountry(savedAnswerMap);
-                return;
-            }
-            clearSaveData();
-            setAnsweredCountriesMap(new Map());
-        }
-        selectRandomUnansweredCountry(new Map());
-    }, []);
+    useQuizPreparation(localStorageKey, setAnsweredCountriesMap, selectRandomUnansweredCountry);
 
     const { width, contentHeight } = useWindowSize();
 

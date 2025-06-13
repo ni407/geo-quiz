@@ -43,7 +43,7 @@ export default function Page() {
     };
 
     useEffect(() => {
-        if (localStorage.getItem(localStorageKey)) {
+        if (typeof window !== 'undefined' && localStorage.getItem(localStorageKey)) {
             if (confirm('前回の途中から再開しますか？')) {
                 const savedAnswerMap = load();
                 setAnsweredCountriesMap(savedAnswerMap);

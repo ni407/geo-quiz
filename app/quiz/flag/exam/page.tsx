@@ -10,12 +10,16 @@ import {
     SkipButton,
 } from '@/component/quiz';
 import { Geometry, geographyData } from '@/lib/geography';
-import { pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
-import { useEffect, useRef, useState } from 'react';
+import { pickRandomUnAnsweredCountry, useLocalStorage, useQuizPreparation } from '@/lib/util';
+import { useRef, useState } from 'react';
 import { AnsweredCountriesMap } from '../../map/exam/page';
 
 export default function Page() {
-    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(null);
+    const geometries = geographyData.objects.world.geometries;
+
+    const startCountry = geometries[Math.floor(Math.random() * geometries.length)];
+
+    const [selectedCountry, setSelectedCountry] = useState<Geometry | null>(startCountry ?? null);
     const [answeredCountriesMap, setAnsweredCountriesMap] = useState<AnsweredCountriesMap>(
         new Map(),
     );
@@ -34,21 +38,8 @@ export default function Page() {
     };
 
     const localStorageKey = 'flag-exam-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
-    useEffect(() => {
-        if (localStorage.getItem(localStorageKey)) {
-            if (confirm('前回の途中から再開しますか？')) {
-                const savedAnswerMap = load();
-                setAnsweredCountriesMap(savedAnswerMap);
-                selectRandomUnansweredCountry(savedAnswerMap);
-                return;
-            }
-            clearSaveData();
-            setAnsweredCountriesMap(new Map());
-        }
-        selectRandomUnansweredCountry(new Map());
-    }, []);
+    useQuizPreparation(localStorageKey, setAnsweredCountriesMap, selectRandomUnansweredCountry);
 
     const [finishModalVisible, setFinishModalVisible] = useState(false);
     const onClose = () => {
@@ -78,7 +69,7 @@ ${location.origin}
     };
 
     const { save } = useLocalStorage(localStorageKey);
-    const geometries = geographyData.objects.world.geometries;
+
     const pass = () => {
         if (selectedCountry === null) {
             alert('国を選択してください。');

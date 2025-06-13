@@ -13,7 +13,6 @@ export default function Home() {
             </div>
 
             <div className="w-full grid lg:grid-cols-3 gap-4">
-                {/* モード選択カード */}
                 <ModeCard title="地図モード">
                     <MainMenuLink
                         href="/quiz/map/exam"

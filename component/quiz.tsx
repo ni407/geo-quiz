@@ -3,6 +3,7 @@ import { getDescriptionFromId } from '@/lib/description';
 import { getFlagImageUrl } from '@/lib/flag';
 import { GeographyData, Geometry } from '@/lib/geography';
 import { checkAnswer, pickRandomUnAnsweredCountry, useLocalStorage } from '@/lib/util';
+import Image from 'next/image';
 import {
     Dispatch,
     FunctionComponent,
@@ -172,7 +173,7 @@ export const HintButton: FunctionComponent<{
                         switch (type) {
                             case HintType.Flag:
                                 return (
-                                    <img
+                                    <Image
                                         src={getFlagImageUrl(selectedCountry.id)}
                                         alt={selectedCountry.id}
                                         width={256}

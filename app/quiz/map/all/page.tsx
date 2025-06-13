@@ -11,7 +11,7 @@ import {
     ShuffleButton,
 } from '@/component/quiz';
 import { Geometry, geographyData } from '@/lib/geography';
-import { pickRandomUnAnsweredCountry, useLocalStorage, useWindowSize } from '@/lib/util';
+import { pickRandomUnAnsweredCountry, useQuizPreparation, useWindowSize } from '@/lib/util';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
@@ -44,20 +44,8 @@ export default function Page() {
     };
 
     const localStorageKey = 'all-answeredCountriesMap';
-    const { load, clearSaveData } = useLocalStorage(localStorageKey);
 
-    useEffect(() => {
-        if (localStorage.getItem(localStorageKey)) {
-            if (confirm('前回の途中から再開しますか？')) {
-                const savedAnswerMap = load();
-                setAnsweredCountriesMap(savedAnswerMap);
-                selectRandomUnansweredCountry(savedAnswerMap);
-                return;
-            }
-            clearSaveData();
-            setAnsweredCountriesMap(new Map());
-        }
-    }, []);
+    useQuizPreparation(localStorageKey, setAnsweredCountriesMap, selectRandomUnansweredCountry);
     const { width, contentHeight } = useWindowSize();
 
     return (

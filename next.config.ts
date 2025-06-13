@@ -1,9 +1,10 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  output: 'export',
-  reactStrictMode: true,
-  trailingSlash: true,
+    reactStrictMode: true,
+    images: {
+        remotePatterns: [new URL('https://flagcdn.com/**')],
+    },
 };
 
 export default nextConfig;

@@ -1,5 +1,5 @@
 import { DrawerHeight } from '@/component/layout';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useLayoutEffect, useState } from 'react';
 import { Geometry, Region, geographyData } from './geography';
 
 export const isJapaneseMatch = (inputStr: string, answer: string) => {
@@ -94,6 +94,27 @@ export const useLocalStorage = (localStorageKey: string) => {
     };
 
     return { save, load, clearSaveData };
+};
+
+export const useQuizPreparation = (
+    localStorageKey: string,
+    setAnsweredCountriesMap: Dispatch<SetStateAction<Map<string, Geometry>>>,
+    selectRandomUnansweredCountry: (savedAnswerMap: Map<string, Geometry>) => void,
+) => {
+    const { load, clearSaveData } = useLocalStorage(localStorageKey);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && localStorage.getItem(localStorageKey)) {
+            if (confirm('前回の途中から再開しますか？')) {
+                const savedAnswerMap = load();
+                setAnsweredCountriesMap(savedAnswerMap);
+                selectRandomUnansweredCountry(savedAnswerMap);
+                return;
+            }
+            clearSaveData();
+            setAnsweredCountriesMap(new Map());
+        }
+    }, []);
 };
 
 export const pickRandomUnAnsweredCountry = (
