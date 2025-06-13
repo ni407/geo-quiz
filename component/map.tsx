@@ -9,6 +9,7 @@ import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 're
 export const ColorPalette = {
     ocean: '#3499BD',
     default: '#F3F3F3',
+    hover: '#FFC1BF',
     selected: '#FF6F6E',
     answered: '#79FE56',
     skipped: '#9E9E9E',
@@ -70,7 +71,10 @@ export const GeographyMap: FunctionComponent<{
                 }
                 return ColorPalette.answered;
             }
-            return ColorPalette.selected;
+            if (countryId === selectedCountry?.id) {
+                return ColorPalette.selected;
+            }
+            return ColorPalette.hover;
         },
         [answeredCountriesMap],
     );

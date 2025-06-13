@@ -2395,7 +2395,7 @@ export const geographyData: GeographyData = {
                     properties: {
                         name: 'Cook Islands',
                         region: 'オセアニア',
-                        jpNames: ['クック諸島', 'くっくしょとう'],
+                        jpNames: ['クック諸島', 'くっくしょとう', 'クック'],
                         coordinates: [-159.7762, -21.2335],
                     },
                 },
